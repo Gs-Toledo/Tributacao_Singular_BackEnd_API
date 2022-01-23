@@ -24,15 +24,13 @@ namespace Tributacao_Singular.Aplicacao.Comandos
     {
         private readonly IMediatorHandler mediadorHandler;
         private readonly IClienteRepositorio respositorioCliente;
-        private readonly IProdutoRepositorio respositorioProduto;
         private readonly IMapper mapper;
 
-        public ClienteCommandHandler(IMediatorHandler mediadorHandler, IClienteRepositorio respositorioCliente, IMapper mapper, IProdutoRepositorio respositorioProduto)
+        public ClienteCommandHandler(IMediatorHandler mediadorHandler, IClienteRepositorio respositorioCliente, IMapper mapper)
         {
             this.mediadorHandler = mediadorHandler;
             this.respositorioCliente = respositorioCliente;
             this.mapper = mapper;
-            this.respositorioProduto = respositorioProduto;
         }
 
         public async Task<bool> Handle(AdicionarClienteComando request, CancellationToken cancellationToken)
@@ -79,26 +77,35 @@ namespace Tributacao_Singular.Aplicacao.Comandos
             {
                 if (!ValidarComando(request)) return false;
 
-                var clienteViewModel = new ClienteViewModel();
-                clienteViewModel.cnpj = request.cnpj;
-                clienteViewModel.Id = request.Id;
-                clienteViewModel.nome = request.nome;
-                clienteViewModel.Produtos = request.Produtos;
+                var ClienteExiste = await respositorioCliente.ObterClienteProdutosPorId(request.Id);
 
-                var cliente = mapper.Map<Cliente>(clienteViewModel);
+                if (ClienteExiste == null)
+                {
+                    await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Atualizar", "Não Existe um Cliente Informado."));
+                    return false;
+                }
 
-                await respositorioCliente.Atualizar(cliente);
+                if (respositorioCliente.Buscar(p => p.cnpj == request.cnpj && p.Id != request.Id).Result.Any())
+                {
+                    await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Atualizar", "Existe um Cliente com cpnj Informado."));
+                    return false;
+                }
+
+                ClienteExiste.nome = request.nome;
+                ClienteExiste.cnpj = request.cnpj;
+
+                await respositorioCliente.Atualizar(ClienteExiste);
 
                 return true;
             }
             catch (DominioException ex)
             {
-                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Adicionar", ex.Message));
+                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Atualizar", ex.Message));
                 return false;
             }
             catch (Exception ex)
             {
-                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Adicionar", ex.Message));
+                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Atualizar", ex.Message));
                 return false;
             }
         }
@@ -115,12 +122,12 @@ namespace Tributacao_Singular.Aplicacao.Comandos
             }
             catch (DominioException ex)
             {
-                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Adicionar", ex.Message));
+                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Remover", ex.Message));
                 return false;
             }
             catch (Exception ex)
             {
-                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Adicionar", ex.Message));
+                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Remover", ex.Message));
                 return false;
             }
         }
@@ -131,39 +138,35 @@ namespace Tributacao_Singular.Aplicacao.Comandos
             {
                 if (!ValidarComando(request)) return false;
 
-                var ClienteExiste = await respositorioCliente.ObterPorId(request.Id);
+                var ClienteExiste = await respositorioCliente.ObterClienteProdutosPorId(request.Id);
 
                 if (ClienteExiste == null)
                 {
-                    await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Adicionar", "Não existe um Cliente informado."));
+                    await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("AdicionarProduto", "Não existe um Cliente informado."));
                     return false;
                 }
 
-                var clienteBd = await respositorioProduto.ObterPorClienteId(request.Id);
-
-                var ListaProdutos = clienteBd.Produtos.ToList();
+                var ListaProdutos = ClienteExiste.Produtos.ToList();
 
                 foreach(var item in request.Produtos) 
                 {
                     ListaProdutos.Add(mapper.Map<Produto>(item));
                 }
 
-                clienteBd.Produtos = ListaProdutos;
+                ClienteExiste.Produtos = ListaProdutos;
 
-                var cliente = mapper.Map<Cliente>(clienteBd);
-
-                await respositorioCliente.Atualizar(cliente);
+                await respositorioCliente.Atualizar(ClienteExiste);
 
                 return true;
             }
             catch (DominioException ex)
             {
-                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Adicionar", ex.Message));
+                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("AdicionarProduto", ex.Message));
                 return false;
             }
             catch (Exception ex)
             {
-                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Adicionar", ex.Message));
+                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("AdicionarProduto", ex.Message));
                 return false;
             }
         }

@@ -4,7 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Tributacao_Singular.Aplicacao.Comandos;
+using Tributacao_Singular.Aplicacao.Comandos.CategoriaComandos;
 using Tributacao_Singular.Aplicacao.Comandos.ClienteComandos;
+using Tributacao_Singular.Aplicacao.Comandos.ProdutoComandos;
 using Tributacao_Singular.Aplicacao.Servicos;
 using Tributacao_Singular.Infra.Contexto;
 using Tributacao_Singular.Infra.Repositorios;
@@ -39,8 +41,17 @@ namespace Tributacao_Singular.Servico.Configuracoes
             services.AddScoped<IRequestHandler<AtualizarClienteComando, bool>, ClienteCommandHandler>();
             services.AddScoped<IRequestHandler<AdicionarProdutoClienteComando, bool>, ClienteCommandHandler>();
 
+            services.AddScoped<IRequestHandler<AtualizarProdutoComando, bool>, ProdutoCommandHandler>();
+            services.AddScoped<IRequestHandler<RemoverProdutoComando, bool>, ProdutoCommandHandler>();
+
+            services.AddScoped<IRequestHandler<AtualizarCategoriaComando, bool>, CategoriaCommandHandler>();
+            services.AddScoped<IRequestHandler<RemoverCategoriaComando, bool>, CategoriaCommandHandler>();
+            services.AddScoped<IRequestHandler<AdicionarCategoriaComando, bool>, CategoriaCommandHandler>();
+
             //Servicos
             services.AddScoped<IClienteServicoApp, ClienteServicoApp>();
+            services.AddScoped<IProdutoServicoApp, ProdutoServicoApp>();
+            services.AddScoped<ICategoriaServicoApp, CategoriaServicoApp>();
 
             //Repositorio
             services.AddScoped<ICategoriaRepositorio, CategoriaRepositorio>();
