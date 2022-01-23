@@ -30,6 +30,10 @@ namespace Tributacao_Singular.Infra.Mapeamentos
             builder.Property(x => x.IPI)
                 .IsRequired()
                 .HasColumnType("decimal(10,2)");
+
+            builder.HasMany(x => x.Produtos)
+                .WithOne(p => p.Categoria)
+                .HasForeignKey(p => p.CategoriaId);
         }
     }
 }

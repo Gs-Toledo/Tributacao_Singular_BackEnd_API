@@ -26,10 +26,6 @@ namespace Tributacao_Singular.Infra.Mapeamentos
             builder.Property(x => x.NCM)
                 .IsRequired()
                 .HasColumnType("varchar(8)");
-
-            builder.HasOne(x => x.Categoria)
-                .WithMany(p => p.Produtos)
-                .HasForeignKey(y => y.CategoriaId);
         }
     }
 }

@@ -14,12 +14,13 @@ namespace Tributacao_Singular.Negocio.Modelos
 
         public string EAN { get; set; }
 
-        /* EF Relation */
+        public Guid ClienteId { get; set; }
 
         public Guid CategoriaId { get; set; }
 
+        /* EF Relation */
         public Categoria Categoria { get; set; }
-        public IEnumerable<Cliente> Clientes { get; set; }
+        public Cliente Cliente { get; set; }
 
         public Produto() 
         {
@@ -27,16 +28,16 @@ namespace Tributacao_Singular.Negocio.Modelos
             NCM = "";
             EAN = "";
             Categoria = new Categoria();
-            Clientes = new List<Cliente>();
+            Cliente = new Cliente();
         }
 
-        public Produto(string descricao, string NCM, string EAN, Categoria categoria, List<Cliente> clientes)
+        public Produto(string descricao, string NCM, string EAN, Categoria categoria, Cliente cliente)
         {
             this.descricao = descricao;
             this.NCM = NCM;
             this.NCM = NCM;
             Categoria = categoria;
-            Clientes = clientes;
+            Cliente = cliente;
         }
     }
 }
