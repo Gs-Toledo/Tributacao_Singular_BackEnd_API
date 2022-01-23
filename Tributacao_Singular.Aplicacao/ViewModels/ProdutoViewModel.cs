@@ -22,6 +22,6 @@ namespace Tributacao_Singular.Aplicacao.ViewModels
 
         public Guid CategoriaId { get; set; }
 
-        public IEnumerable<ProdutoViewModel> Clientes { get; set; }
+        public Guid ClienteId { get; set; }
     }
 }

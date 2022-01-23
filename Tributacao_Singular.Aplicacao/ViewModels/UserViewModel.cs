@@ -21,6 +21,25 @@ namespace Tributacao_Singular.Aplicacao.ViewModels
         public string ConfirmPassword { get; set; }
     }
 
+    public class RegisterClienteViewModel
+    {
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
+        [EmailAddress(ErrorMessage = "O campo {0} está em formato inválido")]
+        public string Email { get; set; }
+
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
+        [StringLength(100, ErrorMessage = "O campo {0} precisa ter entre {2} e {1} caracteres", MinimumLength = 6)]
+        public string Password { get; set; }
+
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
+        [StringLength(150, ErrorMessage = "O campo {0} precisa ter entre {1} e {2} caracteres"), MinLength(2)]
+        public string nome { get; set; }
+
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
+        [StringLength(14, ErrorMessage = "O campo {0} precisa ter {1} caracteres")]
+        public string cnpj { get; set; }
+    }
+
     public class LoginUserViewModel
     {
         [Required(ErrorMessage = "O campo {0} é obrigatório")]

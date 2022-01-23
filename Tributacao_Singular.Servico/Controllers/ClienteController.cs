@@ -43,17 +43,6 @@ namespace Tributacao_Singular.Servico.Controllers
             return Response(cliente);
         }
 
-        [ClaimsAuthorize("Cliente", "Adicionar")]
-        [HttpPost("Adicionar")]
-        public async Task<IActionResult> AdicionarCliente( ClienteViewModel clienteViewModel)
-        {
-            if (!ModelState.IsValid) return ValidateModelState(ModelState);
-
-            await clienteServicoApp.AdicionarAsync(clienteViewModel);
-
-            return Response("Cliente Registrado com Sucesso!");
-        }
-
         [ClaimsAuthorize("Cliente", "Atualizar")]
         [HttpPut("Atualizar/{id:guid}")]
         public async Task<IActionResult> AtualizarCliente(Guid id, [FromBody] ClienteViewModel clienteViewModel)
@@ -71,7 +60,7 @@ namespace Tributacao_Singular.Servico.Controllers
             return Response("Cliente Atualizado com Sucesso!");
         }
 
-        [ClaimsAuthorize("Cliente", "Atualizar")]
+        [ClaimsAuthorize("Cliente", "Remover")]
         [HttpDelete("Remover/{id:guid}")]
         public async Task<IActionResult> RemoverCliente(Guid Id)
         {
