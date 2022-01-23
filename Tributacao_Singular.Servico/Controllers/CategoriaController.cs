@@ -12,7 +12,7 @@ namespace Tributacao_Singular.Servico.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("api/Cliente")]
+    [Route("api/Categoria")]
     public class CategoriaController : ApiControllerBase
     {
         private readonly ICategoriaServicoApp categoriaServicoApp;
