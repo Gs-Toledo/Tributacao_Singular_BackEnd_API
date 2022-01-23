@@ -15,10 +15,12 @@ namespace Tributacao_Singular.Aplicacao.Servicos
 
         Task<bool> RemoverAsync(Guid id);
 
-        Task<bool> AdicionarProdutosAsync(ClienteViewModel clienteViewModel);
-
         Task<List<ClienteViewModel>> ListarTodosAsync();
 
         Task<ClienteViewModel> ObterPorIdAsync(Guid id);
+
+        Task<ClienteViewModel> ObterClienteProdutosPorIdAsync(Guid id);
+
+        Task<IEnumerable<ClienteViewModel>> ObterTodosClienteProdutosAsync();
     }
 }

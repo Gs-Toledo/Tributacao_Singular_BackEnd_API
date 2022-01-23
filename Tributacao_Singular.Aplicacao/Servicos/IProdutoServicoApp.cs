@@ -9,6 +9,7 @@ namespace Tributacao_Singular.Aplicacao.Servicos
 {
     public interface IProdutoServicoApp
     {
+        Task<bool> AdicionarAsync(ProdutoViewModel produtoViewModel);
 
         Task<bool> AtualizarAsync(ProdutoViewModel produtoViewModel);
 

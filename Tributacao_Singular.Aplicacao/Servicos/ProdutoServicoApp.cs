@@ -24,6 +24,11 @@ namespace Tributacao_Singular.Aplicacao.Servicos
             this.respositorioProduto = respositorioProduto;
         }
 
+        public async Task<bool> AdicionarAsync(ProdutoViewModel produtoViewModel)
+        {
+            var adicionarComando = mapper.Map<AdicionarProdutoComando>(produtoViewModel);
+            return await mediador.EnviarComando(adicionarComando);
+        }
         public async Task<bool> AtualizarAsync(ProdutoViewModel produtoViewModel)
         {
             var adicionarComando = mapper.Map<AtualizarProdutoComando>(produtoViewModel);

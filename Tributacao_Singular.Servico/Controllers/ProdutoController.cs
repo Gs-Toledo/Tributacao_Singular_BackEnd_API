@@ -43,6 +43,17 @@ namespace Tributacao_Singular.Servico.Controllers
             return Response(cliente);
         }
 
+        [ClaimsAuthorize("Cliente", "Adicionar")]
+        [HttpPost("Adicionar")]
+        public async Task<IActionResult> AdicionarProduto([FromQuery] ProdutoViewModel produtoViewModel)
+        {
+            if (!ModelState.IsValid) return ValidateModelState(ModelState);
+
+            await produtoServicoApp.AdicionarAsync(produtoViewModel);
+
+            return Response("Produto Adicionado com Sucesso!");
+        }
+
         [ClaimsAuthorize("Cliente", "Atualizar")]
         [HttpPut("Atualizar/{id:guid}")]
         public async Task<IActionResult> AtualizarProduto(Guid id, [FromBody] ProdutoViewModel produtoViewModel)
@@ -57,7 +68,7 @@ namespace Tributacao_Singular.Servico.Controllers
 
             await produtoServicoApp.AtualizarAsync(produtoViewModel);
 
-            return Response("Cliente Atualizado com Sucesso!");
+            return Response("Produto Atualizado com Sucesso!");
         }
 
         [ClaimsAuthorize("Cliente", "Remover")]
@@ -66,7 +77,7 @@ namespace Tributacao_Singular.Servico.Controllers
         {
             await produtoServicoApp.RemoverAsync(Id);
 
-            return Response("Cliente Removido com Sucesso!");
+            return Response("Produto Removido com Sucesso!");
         }
     }
 }

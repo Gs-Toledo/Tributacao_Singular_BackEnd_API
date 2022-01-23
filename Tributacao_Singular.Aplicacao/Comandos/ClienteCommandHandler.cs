@@ -19,8 +19,7 @@ namespace Tributacao_Singular.Aplicacao.Comandos
     public class ClienteCommandHandler :
         IRequestHandler<AdicionarClienteComando, bool>,
         IRequestHandler<AtualizarClienteComando, bool>, 
-        IRequestHandler<RemoverClienteComando, bool>,
-        IRequestHandler<AdicionarProdutoClienteComando, bool>
+        IRequestHandler<RemoverClienteComando, bool>
     {
         private readonly IMediatorHandler mediadorHandler;
         private readonly IClienteRepositorio respositorioCliente;
@@ -128,45 +127,6 @@ namespace Tributacao_Singular.Aplicacao.Comandos
             catch (Exception ex)
             {
                 await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Remover", ex.Message));
-                return false;
-            }
-        }
-
-        public async Task<bool> Handle(AdicionarProdutoClienteComando request, CancellationToken cancellationToken)
-        {
-            try
-            {
-                if (!ValidarComando(request)) return false;
-
-                var ClienteExiste = await respositorioCliente.ObterClienteProdutosPorId(request.Id);
-
-                if (ClienteExiste == null)
-                {
-                    await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("AdicionarProduto", "Não existe um Cliente informado."));
-                    return false;
-                }
-
-                var ListaProdutos = ClienteExiste.Produtos.ToList();
-
-                foreach(var item in request.Produtos) 
-                {
-                    ListaProdutos.Add(mapper.Map<Produto>(item));
-                }
-
-                ClienteExiste.Produtos = ListaProdutos;
-
-                await respositorioCliente.Atualizar(ClienteExiste);
-
-                return true;
-            }
-            catch (DominioException ex)
-            {
-                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("AdicionarProduto", ex.Message));
-                return false;
-            }
-            catch (Exception ex)
-            {
-                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("AdicionarProduto", ex.Message));
                 return false;
             }
         }

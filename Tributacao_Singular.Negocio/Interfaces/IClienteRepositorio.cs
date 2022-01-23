@@ -12,5 +12,7 @@ namespace Tributacao_Singular.Negocio.Interfaces
         Task<Cliente> ObterPorCnpj(string cnpj);
 
         Task<Cliente> ObterClienteProdutosPorId(Guid Id);
+
+        Task<IEnumerable<Cliente>> ObterTodosClienteProdutos();
     }
 }

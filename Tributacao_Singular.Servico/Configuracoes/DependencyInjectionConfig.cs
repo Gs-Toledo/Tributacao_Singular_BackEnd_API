@@ -39,8 +39,8 @@ namespace Tributacao_Singular.Servico.Configuracoes
             services.AddScoped<IRequestHandler<AdicionarClienteComando, bool>, ClienteCommandHandler>();
             services.AddScoped<IRequestHandler<RemoverClienteComando, bool>, ClienteCommandHandler>();
             services.AddScoped<IRequestHandler<AtualizarClienteComando, bool>, ClienteCommandHandler>();
-            services.AddScoped<IRequestHandler<AdicionarProdutoClienteComando, bool>, ClienteCommandHandler>();
 
+            services.AddScoped<IRequestHandler<AdicionarProdutoComando, bool>, ProdutoCommandHandler>();
             services.AddScoped<IRequestHandler<AtualizarProdutoComando, bool>, ProdutoCommandHandler>();
             services.AddScoped<IRequestHandler<RemoverProdutoComando, bool>, ProdutoCommandHandler>();
 

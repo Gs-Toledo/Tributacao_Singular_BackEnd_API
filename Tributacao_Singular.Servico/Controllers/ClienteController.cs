@@ -29,16 +29,16 @@ namespace Tributacao_Singular.Servico.Controllers
         [HttpGet("Obter-Todos")]
         public async Task<IActionResult> ObterTodos() 
         {
-            var listaClientes = await clienteServicoApp.ListarTodosAsync();
+            var listaClientes = await clienteServicoApp.ObterTodosClienteProdutosAsync();
 
             return Response(listaClientes);
         }
 
         [ClaimsAuthorize("Cliente,Administrador", "Listar")]
         [HttpGet("Obter-Por-Id/{id:guid}")]
-        public async Task<IActionResult> ObterPorId(Guid Id)
+        public async Task<IActionResult> ObterPorId(Guid id)
         {
-            var cliente = await clienteServicoApp.ObterPorIdAsync(Id);
+            var cliente = await clienteServicoApp.ObterClienteProdutosPorIdAsync(id);
 
             return Response(cliente);
         }
@@ -65,17 +65,6 @@ namespace Tributacao_Singular.Servico.Controllers
         public async Task<IActionResult> RemoverCliente(Guid Id)
         {
             await clienteServicoApp.RemoverAsync(Id);
-
-            return Response("Cliente Removido com Sucesso!");
-        }
-
-        [ClaimsAuthorize("Cliente", "AdicionarProduto")]
-        [HttpPost("Adicionar-Produto")]
-        public async Task<IActionResult> AdicionarProduto(ClienteViewModel clienteViewModel)
-        {
-            if (!ModelState.IsValid) return ValidateModelState(ModelState);
-
-            await clienteServicoApp.AdicionarProdutosAsync(clienteViewModel);
 
             return Response("Cliente Removido com Sucesso!");
         }

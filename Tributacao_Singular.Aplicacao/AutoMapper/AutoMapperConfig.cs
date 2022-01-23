@@ -37,10 +37,14 @@ namespace Tributacao_Singular.Aplicacao.AutoMapper
                   x.Id
            ));
 
-            CreateMap<ClienteViewModel, AdicionarProdutoClienteComando>()
-              .ConstructUsing(x => new AdicionarProdutoClienteComando(
+            CreateMap<ProdutoViewModel, AdicionarProdutoComando>()
+              .ConstructUsing(x => new AdicionarProdutoComando(
                   x.Id,
-                  x.Produtos
+                  x.descricao,
+                  x.NCM,
+                  x.EAN,
+                  x.Status,
+                  x.ClienteId
            ));
 
             CreateMap<ProdutoViewModel, RemoverProdutoComando>()

@@ -46,12 +46,6 @@ namespace Tributacao_Singular.Aplicacao.Servicos
             return await mediador.EnviarComando(adicionarComando);
         }
 
-        public async Task<bool> AdicionarProdutosAsync(ClienteViewModel clienteViewModel)
-        {
-            var adicionarComando = mapper.Map<AdicionarProdutoClienteComando>(clienteViewModel);
-            return await mediador.EnviarComando(adicionarComando);
-        }
-
         public async Task<List<ClienteViewModel>> ListarTodosAsync()
         {
             return mapper.Map<List<ClienteViewModel>>( await respositorioCliente.ObterTodos() );
@@ -65,6 +59,11 @@ namespace Tributacao_Singular.Aplicacao.Servicos
         public async Task<ClienteViewModel> ObterClienteProdutosPorIdAsync(Guid id)
         {
             return mapper.Map<ClienteViewModel>(await respositorioCliente.ObterClienteProdutosPorId(id));
+        }
+
+        public async Task<IEnumerable<ClienteViewModel>> ObterTodosClienteProdutosAsync()
+        {
+            return mapper.Map<IEnumerable<ClienteViewModel>>(await respositorioCliente.ObterTodosClienteProdutos());
         }
     }
 }
