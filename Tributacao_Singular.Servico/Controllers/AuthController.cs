@@ -56,7 +56,7 @@ namespace Tributacao_Singular.Servico.Controllers
             if (result.Succeeded)
             {
                 //add permissao de Adm
-                await _userManager.AddClaimAsync(user, new Claim("Administrador", "Listar,Adicionar,Atualizar,Excluir"));
+                await _userManager.AddClaimAsync(user, new Claim("Administrador", "Listar,Adicionar,Atualizar,Remover"));
 
                 return Response(await GerarJwt(user.Email));
             }
@@ -84,7 +84,7 @@ namespace Tributacao_Singular.Servico.Controllers
             if (result.Succeeded)
             {
                 //add permissao de Tributarista
-                await _userManager.AddClaimAsync(user, new Claim("Tributarista", "Listar,Adicionar,Atualizar,Excluir"));
+                await _userManager.AddClaimAsync(user, new Claim("Tributarista", "Listar,Adicionar,Atualizar,Remover"));
 
                 return Response(await GerarJwt(user.Email));
             }
@@ -112,7 +112,7 @@ namespace Tributacao_Singular.Servico.Controllers
             if (result.Succeeded)
             {
                 //add permissao de Usuario
-                await _userManager.AddClaimAsync(user, new Claim("Cliente", "Listar,Adicionar,Atualizar,Excluir,AdicionarProduto"));
+                await _userManager.AddClaimAsync(user, new Claim("Cliente", "Listar,Adicionar,Atualizar,Remover,AdicionarProduto"));
 
                 var userIdentityDb = await _userManager.FindByEmailAsync(user.Email);
 

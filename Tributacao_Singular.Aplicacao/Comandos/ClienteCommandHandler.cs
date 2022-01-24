@@ -115,6 +115,14 @@ namespace Tributacao_Singular.Aplicacao.Comandos
             {
                 if (!ValidarComando(request)) return false;
 
+                var ClienteExiste = await respositorioCliente.ObterClienteProdutosPorId(request.Id);
+
+                if (ClienteExiste == null)
+                {
+                    await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Remover", "Não Existe um Cliente Informado."));
+                    return false;
+                }
+
                 await respositorioCliente.Remover(request.Id);
 
                 return true;

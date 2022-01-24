@@ -101,6 +101,14 @@ namespace Tributacao_Singular.Aplicacao.Comandos
         {
             try
             {
+                var CategoriaExiste = await respositorioCategoria.ObterPorId(request.Id);
+
+                if (CategoriaExiste == null)
+                {
+                    await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Remover", "Não Existe uma Categoria Informada."));
+                    return false;
+                }
+
                 if (!ValidarComando(request)) return false;
 
                 await respositorioCategoria.Remover(request.Id);
