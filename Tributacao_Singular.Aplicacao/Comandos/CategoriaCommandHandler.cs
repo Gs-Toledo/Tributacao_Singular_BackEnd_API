@@ -1,62 +1,54 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Tributacao_Singular.Aplicacao.Comandos.ClienteComandos;
+using Tributacao_Singular.Aplicacao.Comandos.CategoriaComandos;
 using Tributacao_Singular.Aplicacao.Excecoes;
+using Tributacao_Singular.Aplicacao.ViewModels;
 using Tributacao_Singular.Negocio.Interfaces;
+using Tributacao_Singular.Negocio.Modelos;
 using Vir_Fundos_Infraestrutura.Comunicacao.Mediador;
 using Vir_Fundos_Infraestrutura.Mensagens;
 using Vir_Fundos_Infraestrutura.Mensagens.Notificacao;
-using Tributacao_Singular.Negocio.Modelos;
-using AutoMapper;
-using Tributacao_Singular.Aplicacao.ViewModels;
 
 namespace Tributacao_Singular.Aplicacao.Comandos
 {
-    public class ClienteCommandHandler :
-        IRequestHandler<AdicionarClienteComando, bool>,
-        IRequestHandler<AtualizarClienteComando, bool>, 
-        IRequestHandler<RemoverClienteComando, bool>
+    public class CategoriaCommandHandler :
+        IRequestHandler<AtualizarCategoriaComando, bool>,
+        IRequestHandler<RemoverCategoriaComando, bool>,
+        IRequestHandler<AdicionarCategoriaComando, bool>
     {
         private readonly IMediatorHandler mediadorHandler;
-        private readonly IClienteRepositorio respositorioCliente;
+        private readonly ICategoriaRepositorio respositorioCategoria;
         private readonly IMapper mapper;
 
-        public ClienteCommandHandler(IMediatorHandler mediadorHandler, IClienteRepositorio respositorioCliente, IMapper mapper)
+        public CategoriaCommandHandler(IMediatorHandler mediadorHandler, ICategoriaRepositorio respositorioCategoria, IMapper mapper)
         {
             this.mediadorHandler = mediadorHandler;
-            this.respositorioCliente = respositorioCliente;
+            this.respositorioCategoria = respositorioCategoria;
             this.mapper = mapper;
         }
 
-        public async Task<bool> Handle(AdicionarClienteComando request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(AdicionarCategoriaComando request, CancellationToken cancellationToken)
         {
-            try 
+            try
             {
                 if (!ValidarComando(request)) return false;
 
-                var ClienteExiste = await respositorioCliente.ObterPorCnpj(request.cnpj);
+                var categoria = new CategoriaViewModel();
+                categoria.Id = request.Id;
+                categoria.descricao = request.descricao;
+                categoria.Cofins = request.Cofins;
+                categoria.ICMS = request.ICMS;
+                categoria.IPI = request.IPI;
 
-                if (ClienteExiste != null) 
-                {
-                    await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Adicionar", "Já existe um Cliente com o cnpj informado."));
-                    return false;
-                }
-
-                var clienteViewModel = new ClienteViewModel();
-                clienteViewModel.cnpj = request.cnpj;
-                clienteViewModel.Id = request.Id;
-                clienteViewModel.nome = request.nome;
-                clienteViewModel.Produtos = request.Produtos;
-
-                var cliente = mapper.Map<Cliente>(clienteViewModel);
-
-                await respositorioCliente.Adicionar(cliente);
+                await respositorioCategoria.Adicionar(mapper.Map<Categoria>(categoria));
 
                 return true;
+
             }
             catch (DominioException ex)
             {
@@ -70,30 +62,26 @@ namespace Tributacao_Singular.Aplicacao.Comandos
             }
         }
 
-        public async Task<bool> Handle(AtualizarClienteComando request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(AtualizarCategoriaComando request, CancellationToken cancellationToken)
         {
             try
             {
                 if (!ValidarComando(request)) return false;
 
-                var ClienteExiste = await respositorioCliente.ObterClienteProdutosPorId(request.Id);
+                var CategoriaExiste = await respositorioCategoria.ObterPorId(request.Id);
 
-                if (ClienteExiste == null)
+                if (CategoriaExiste == null) 
                 {
-                    await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Atualizar", "Não Existe um Cliente Informado."));
+                    await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Atualizar", "Não Existe uma Categoria Informada."));
                     return false;
                 }
 
-                if (respositorioCliente.Buscar(p => p.cnpj == request.cnpj && p.Id != request.Id).Result.Any())
-                {
-                    await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Atualizar", "Existe um Cliente com cpnj Informado."));
-                    return false;
-                }
+                CategoriaExiste.descricao = request.descricao;
+                CategoriaExiste.Cofins = request.Cofins;
+                CategoriaExiste.ICMS = request.ICMS;
+                CategoriaExiste.IPI = request.IPI;
 
-                ClienteExiste.nome = request.nome;
-                ClienteExiste.cnpj = request.cnpj;
-
-                await respositorioCliente.Atualizar(ClienteExiste);
+                await respositorioCategoria.Atualizar(CategoriaExiste);
 
                 return true;
             }
@@ -109,13 +97,13 @@ namespace Tributacao_Singular.Aplicacao.Comandos
             }
         }
 
-        public async Task<bool> Handle(RemoverClienteComando request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(RemoverCategoriaComando request, CancellationToken cancellationToken)
         {
             try
             {
                 if (!ValidarComando(request)) return false;
 
-                await respositorioCliente.Remover(request.Id);
+                await respositorioCategoria.Remover(request.Id);
 
                 return true;
             }

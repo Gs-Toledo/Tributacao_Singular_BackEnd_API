@@ -13,8 +13,8 @@ namespace Tributacao_Singular.Servico.Configuracoes
                 s.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1.0.0",
-                    Title = "BCart",
-                    Description = "Módulo de Estratégia - Nota release: Nova funcionalidade, cadastro de estratégias",
+                    Title = "Tributacao Singular",
+                    Description = "Api para tributação de produtos",
                     Contact = new OpenApiContact { Name = "TributacaoSingular", Email = "jpsribeiro@id.uff.br", Url = new Uri("https://TributacaoSingular.com.br") },
                     License = new OpenApiLicense() { Name = "MIT", Url = new Uri("https://TributacaoSingular.com.br") },
                 });

@@ -14,12 +14,11 @@ namespace Tributacao_Singular.Infra.Repositorios
     {
         public ProdutoRepositorio(MeuDbContext db) : base(db) { }
 
-        public async Task<Cliente> ObterPorClienteId(Guid id)
+        public async Task<List<Produto>> ObterProdutosPorClienteId(Guid id)
         {
-            return await Db.Clientes.AsNoTracking()
-                .Include(x => x.Produtos)
-                .Where(x => x.Id == id)
-                .FirstOrDefaultAsync();
+            return await Db.Produtos.AsNoTracking()
+                .Where(x => x.ClienteId == id)
+                .ToListAsync();
         }
     }
 }

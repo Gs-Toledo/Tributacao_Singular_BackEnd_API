@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Tributacao_Singular.Aplicacao.Servicos;
 using Tributacao_Singular.Aplicacao.ViewModels;
 using Tributacao_Singular.Negocio.Interfaces;
 using Tributacao_Singular.Servico.Extensoes;
@@ -21,6 +22,7 @@ namespace Tributacao_Singular.Servico.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ConfiguracaoApp _appSettings;
         private readonly ILogger _logger;
+        private readonly IClienteServicoApp clienteServicoApp;
 
         public AuthController(IMediatorHandler mediadorHandler,
                               INotificationHandler<NotificacaoDominio> notificacoesHandler,
@@ -28,12 +30,14 @@ namespace Tributacao_Singular.Servico.Controllers
                               UserManager<IdentityUser> userManager,
                               IOptions<ConfiguracaoApp> appSettings,
                               IUser user,
-                              ILogger<AuthController> logger) : base(notificacoesHandler, mediadorHandler, user)
+                              ILogger<AuthController> logger,
+                              IClienteServicoApp clienteServicoApp) : base(notificacoesHandler, mediadorHandler, user)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _logger = logger;
             _appSettings = appSettings.Value;
+            this.clienteServicoApp = clienteServicoApp;
         }
 
         [HttpPost("nova-conta-Administrador")]
@@ -64,8 +68,36 @@ namespace Tributacao_Singular.Servico.Controllers
             return Response(registerUser);
         }
 
+        [HttpPost("nova-conta-Tributarista")]
+        public async Task<IActionResult> RegistrarTributarista(RegisterUserViewModel registerUser)
+        {
+            if (!ModelState.IsValid) return ValidateModelState(ModelState);
+
+            var user = new IdentityUser
+            {
+                UserName = registerUser.Email,
+                Email = registerUser.Email,
+                EmailConfirmed = true
+            };
+
+            var result = await _userManager.CreateAsync(user, registerUser.Password);
+            if (result.Succeeded)
+            {
+                //add permissao de Tributarista
+                await _userManager.AddClaimAsync(user, new Claim("Tributarista", "Listar,Adicionar,Atualizar,Excluir"));
+
+                return Response(await GerarJwt(user.Email));
+            }
+            foreach (var error in result.Errors)
+            {
+                NotifyError(String.Empty, error.Description);
+            }
+
+            return Response(registerUser);
+        }
+
         [HttpPost("nova-conta-Cliente")]
-        public async Task<IActionResult> RegistrarCliente(RegisterUserViewModel registerUser)
+        public async Task<IActionResult> RegistrarCliente(RegisterClienteViewModel registerUser)
         {
             if (!ModelState.IsValid) return ValidateModelState(ModelState);
 
@@ -82,7 +114,16 @@ namespace Tributacao_Singular.Servico.Controllers
                 //add permissao de Usuario
                 await _userManager.AddClaimAsync(user, new Claim("Cliente", "Listar,Adicionar,Atualizar,Excluir,AdicionarProduto"));
 
-                await _signInManager.SignInAsync(user, false);
+                var userIdentityDb = await _userManager.FindByEmailAsync(user.Email);
+
+                var cliente = new ClienteViewModel();
+
+                cliente.cnpj = registerUser.cnpj;
+                cliente.nome = registerUser.nome;
+                cliente.Id = Guid.Parse(userIdentityDb.Id);
+
+                await clienteServicoApp.AdicionarAsync(cliente);
+
                 return Response(await GerarJwt(user.Email));
             }
             foreach (var error in result.Errors)

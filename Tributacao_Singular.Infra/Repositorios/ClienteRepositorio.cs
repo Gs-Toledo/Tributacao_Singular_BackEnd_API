@@ -25,7 +25,17 @@ namespace Tributacao_Singular.Infra.Repositorios
         {
             return await Db.Clientes.AsNoTracking()
                 .Include(x => x.Produtos)
+                .ThenInclude(x => x.Categoria)
                 .FirstOrDefaultAsync(x => x.Id == Id);
+
+        }
+
+        public async Task<IEnumerable<Cliente>> ObterTodosClienteProdutos()
+        {
+            return await Db.Clientes.AsNoTracking()
+                .Include(x => x.Produtos)
+                .ThenInclude(x => x.Categoria)
+                .ToListAsync();
 
         }
     }

@@ -26,9 +26,6 @@ namespace Tributacao_Singular.Negocio.Validacoes
                 .NotEmpty().WithMessage("O campo {PropertyName} precisa ser fornecido")
                 .Length(8)
                 .WithMessage("O campo {PropertyName} precisa ter {MinLength} caracteres");
-
-            RuleFor(p => p.Categoria)
-                .NotEmpty().WithMessage("O campo {PropertyName} precisa ser fornecido");
         }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tributacao_Singular.Infra.Contexto;
 
@@ -11,9 +12,10 @@ using Tributacao_Singular.Infra.Contexto;
 namespace Tributacao_Singular.Infra.Migrations
 {
     [DbContext(typeof(MeuDbContext))]
-    partial class MeuDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220123165230_Troca de Mapeamento")]
+    partial class TrocadeMapeamento
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -110,9 +112,6 @@ namespace Tributacao_Singular.Infra.Migrations
                     b.Property<string>("NCM")
                         .IsRequired()
                         .HasColumnType("varchar(8)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
 
                     b.Property<string>("descricao")
                         .IsRequired()

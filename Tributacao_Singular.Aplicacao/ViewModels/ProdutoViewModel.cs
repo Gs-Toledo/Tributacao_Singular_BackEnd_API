@@ -20,8 +20,14 @@ namespace Tributacao_Singular.Aplicacao.ViewModels
         [StringLength(13, ErrorMessage = "O campo {0} precisa ter {1} caracteres")]
         public string EAN { get; set; }
 
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
+        [StringLength(150, ErrorMessage = "O campo {0} precisa ter entre {0} e {1} caracteres"), MinLength(2)]
+        public string descricao { get; set; }
+
+        public int Status { get; set; }
+
         public Guid CategoriaId { get; set; }
 
-        public IEnumerable<ProdutoViewModel> Clientes { get; set; }
+        public Guid ClienteId { get; set; }
     }
 }

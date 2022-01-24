@@ -23,6 +23,10 @@ namespace Tributacao_Singular.Infra.Mapeamentos
                 .IsRequired()
                 .HasColumnType("varchar(14)");
 
+            builder.HasMany(x => x.Produtos)
+                .WithOne(p => p.Cliente)
+                .HasForeignKey(p => p.ClienteId);
+
             builder.ToTable("Clientes");
         }
     }
