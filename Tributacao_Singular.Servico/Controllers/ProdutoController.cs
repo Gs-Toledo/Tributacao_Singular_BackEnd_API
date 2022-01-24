@@ -54,7 +54,7 @@ namespace Tributacao_Singular.Servico.Controllers
             return Response("Produto Adicionado com Sucesso!");
         }
 
-        [ClaimsAuthorize("Cliente", "Atualizar")]
+        [ClaimsAuthorize("Cliente,Tributarista", "Atualizar")]
         [HttpPut("Atualizar/{id:guid}")]
         public async Task<IActionResult> AtualizarProduto(Guid id, [FromBody] ProdutoViewModel produtoViewModel)
         {
