@@ -45,18 +45,21 @@ namespace Tributacao_Singular.Servico.Controllers
 
         [ClaimsAuthorize("Cliente", "Adicionar")]
         [HttpPost("Adicionar")]
-        public async Task<IActionResult> AdicionarProduto([FromQuery] ProdutoViewModel produtoViewModel)
+        public async Task<IActionResult> AdicionarProduto(ListaProdutoViewModel produtoViewModels)
         {
             if (!ModelState.IsValid) return ValidateModelState(ModelState);
 
-            await produtoServicoApp.AdicionarAsync(produtoViewModel);
+            foreach (var item in produtoViewModels.produtoViewModels) 
+            {
+                await produtoServicoApp.AdicionarAsync(item);
+            }
 
-            return Response("Produto Adicionado com Sucesso!");
+            return Response("Produtos Adicionados com Sucesso!");
         }
 
         [ClaimsAuthorize("Cliente,Tributarista", "Atualizar")]
         [HttpPut("Atualizar/{id:guid}")]
-        public async Task<IActionResult> AtualizarProduto(Guid id, [FromBody] ProdutoViewModel produtoViewModel)
+        public async Task<IActionResult> AtualizarProduto(Guid id, ProdutoViewModel produtoViewModel)
         {
             if (id != produtoViewModel.Id)
             {

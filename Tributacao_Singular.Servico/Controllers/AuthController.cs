@@ -156,6 +156,23 @@ namespace Tributacao_Singular.Servico.Controllers
             return Response(loginUser);
         }
 
+        [HttpPost("Remover/{id:Guid}")]
+        public async Task<IActionResult> DeleteConfirmed(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+
+            var result = await _userManager.DeleteAsync(user);
+
+            if (result.Succeeded)
+            {
+                return Response("Removeu o Usuario");
+            }
+            else 
+            {
+                return Response("Erro na remoção do Usuario: " + id);
+            }
+        }
+
         private async Task<LoginResponseViewModel> GerarJwt(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);

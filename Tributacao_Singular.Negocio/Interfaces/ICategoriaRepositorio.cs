@@ -9,5 +9,6 @@ namespace Tributacao_Singular.Negocio.Interfaces
 {
     public interface ICategoriaRepositorio : IRepositorio<Categoria>
     {
+        Task<Categoria> ObterCategoriaProdutosPorId(Guid Id);
     }
 }

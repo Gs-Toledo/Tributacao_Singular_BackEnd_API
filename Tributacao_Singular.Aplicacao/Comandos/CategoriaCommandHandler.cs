@@ -24,12 +24,14 @@ namespace Tributacao_Singular.Aplicacao.Comandos
         private readonly IMediatorHandler mediadorHandler;
         private readonly ICategoriaRepositorio respositorioCategoria;
         private readonly IMapper mapper;
+        private readonly IProdutoRepositorio respositorioProduto;
 
-        public CategoriaCommandHandler(IMediatorHandler mediadorHandler, ICategoriaRepositorio respositorioCategoria, IMapper mapper)
+        public CategoriaCommandHandler(IMediatorHandler mediadorHandler, ICategoriaRepositorio respositorioCategoria, IMapper mapper, IProdutoRepositorio respositorioProduto)
         {
             this.mediadorHandler = mediadorHandler;
             this.respositorioCategoria = respositorioCategoria;
             this.mapper = mapper;
+            this.respositorioProduto = respositorioProduto;
         }
 
         public async Task<bool> Handle(AdicionarCategoriaComando request, CancellationToken cancellationToken)
@@ -101,7 +103,9 @@ namespace Tributacao_Singular.Aplicacao.Comandos
         {
             try
             {
-                var CategoriaExiste = await respositorioCategoria.ObterPorId(request.Id);
+                if (!ValidarComando(request)) return false;
+
+                var CategoriaExiste = await respositorioCategoria.ObterCategoriaProdutosPorId(request.Id);
 
                 if (CategoriaExiste == null)
                 {
@@ -109,7 +113,19 @@ namespace Tributacao_Singular.Aplicacao.Comandos
                     return false;
                 }
 
-                if (!ValidarComando(request)) return false;
+                if(CategoriaExiste.Produtos.Count() > 0) 
+                {
+                    var ProcuraCategoriaBase = await respositorioCategoria.Buscar(x => x.descricao == "CategoriaBase");
+                    var categoriaBase = ProcuraCategoriaBase.ToList().FirstOrDefault();
+
+                    foreach (var item in CategoriaExiste.Produtos) 
+                    {
+                        item.Categoria = categoriaBase;
+                        item.CategoriaId = categoriaBase.Id;
+
+                        await respositorioProduto.Atualizar(item);
+                    }
+                }
 
                 await respositorioCategoria.Remover(request.Id);
 

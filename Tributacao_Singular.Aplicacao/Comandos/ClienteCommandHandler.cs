@@ -23,13 +23,15 @@ namespace Tributacao_Singular.Aplicacao.Comandos
     {
         private readonly IMediatorHandler mediadorHandler;
         private readonly IClienteRepositorio respositorioCliente;
+        private readonly IProdutoRepositorio respositorioProduto;
         private readonly IMapper mapper;
 
-        public ClienteCommandHandler(IMediatorHandler mediadorHandler, IClienteRepositorio respositorioCliente, IMapper mapper)
+        public ClienteCommandHandler(IMediatorHandler mediadorHandler, IClienteRepositorio respositorioCliente, IMapper mapper, IProdutoRepositorio respositorioProduto)
         {
             this.mediadorHandler = mediadorHandler;
             this.respositorioCliente = respositorioCliente;
             this.mapper = mapper;
+            this.respositorioProduto = respositorioProduto;
         }
 
         public async Task<bool> Handle(AdicionarClienteComando request, CancellationToken cancellationToken)
@@ -121,6 +123,14 @@ namespace Tributacao_Singular.Aplicacao.Comandos
                 {
                     await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Remover", "Não Existe um Cliente Informado."));
                     return false;
+                }
+
+                if (ClienteExiste.Produtos.Count() > 0) 
+                {
+                    foreach (var item in ClienteExiste.Produtos) 
+                    {
+                        await respositorioProduto.Remover(item.Id);
+                    }
                 }
 
                 await respositorioCliente.Remover(request.Id);
