@@ -25,7 +25,7 @@ namespace Tributacao_Singular.Servico.Controllers
             this.produtoServicoApp = produtoServicoApp;
         }
 
-        [ClaimsAuthorize("Cliente,Administrador", "Listar")]
+        [ClaimsAuthorize("Cliente,Administrador,Tributarista", "Listar")]
         [HttpGet("Obter-Todos")]
         public async Task<IActionResult> ObterTodos()
         {
@@ -34,7 +34,7 @@ namespace Tributacao_Singular.Servico.Controllers
             return Response(listaClientes);
         }
 
-        [ClaimsAuthorize("Cliente,Administrador", "Listar")]
+        [ClaimsAuthorize("Cliente,Administrador,Tributarista", "Listar")]
         [HttpGet("Obter-Por-Id/{id:guid}")]
         public async Task<IActionResult> ObterPorId(Guid Id)
         {
