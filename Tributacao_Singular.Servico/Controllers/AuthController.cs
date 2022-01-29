@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Tributacao_Singular.Aplicacao.Servicos;
 using Tributacao_Singular.Aplicacao.ViewModels;
@@ -38,6 +39,14 @@ namespace Tributacao_Singular.Servico.Controllers
             _logger = logger;
             _appSettings = appSettings.Value;
             this.clienteServicoApp = clienteServicoApp;
+        }
+
+        [HttpGet("Obter-Todos")]
+        public async Task<IActionResult> ObterTodos()
+        {
+            var listaUsuarios = _userManager.Users.Select(x => new { x.Id ,x.Email}).ToList();
+
+            return Response(listaUsuarios);
         }
 
         [HttpPost("nova-conta-Administrador")]
@@ -166,20 +175,68 @@ namespace Tributacao_Singular.Servico.Controllers
             return Response(loginUser);
         }
 
-        [HttpPost("Remover/{id:Guid}")]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        [HttpPut("Atualizar/{id:Guid}")]
+        public async Task<IActionResult> AtualizarUsuario(Guid id, UpdateUserViewModel updateUserViewModel)
         {
-            var user = await _userManager.FindByIdAsync(id);
+            if (!ModelState.IsValid) return ValidateModelState(ModelState);
 
-            var result = await _userManager.DeleteAsync(user);
+            var user = await _userManager.FindByIdAsync(id.ToString());
+
+            if (user == null) 
+            {
+                NotifyError(string.Empty, "O id informado não é o mesmo que foi passado na query");
+                return Response(updateUserViewModel);
+            }
+
+            user.UserName = updateUserViewModel.Email;
+            user.Email = updateUserViewModel.Email;
+
+            user.NormalizedUserName = updateUserViewModel.Email.ToUpper();
+            user.NormalizedEmail = updateUserViewModel.Email.ToUpper();
+
+            user.PasswordHash = HashPassword(updateUserViewModel.Password);
+
+            var result = await _userManager.UpdateAsync(user);
 
             if (result.Succeeded)
             {
-                return Response("Removeu o Usuario");
+                _logger.LogInformation("Usuario " + id.ToString() + " atualizado com sucesso"); ;
+                return Response("Usuario atualizado com sucesso");
             }
-            else 
+
+            NotifyError(string.Empty, "Erro na ataulaização");
+            return Response(updateUserViewModel);
+        }
+
+        [HttpDelete("Remover/{id:Guid}")]
+        public async Task<IActionResult> RemoverCliente(Guid id)
+        {
+            try
             {
-                return Response("Erro na remoção do Usuario: " + id);
+                if (clienteServicoApp.ObterPorIdAsync(id) != null) 
+                {
+                    var resultRemocao = await clienteServicoApp.RemoverAsync(id);
+
+                    if(!resultRemocao)
+                        return Response("Erro na remoção do usuario cliente!");
+                }
+
+                var user = await _userManager.FindByIdAsync(id.ToString());
+
+                var result = await _userManager.DeleteAsync(user);
+
+                if (result.Succeeded)
+                {
+                    return Response("Usuario Removido com Sucesso!");
+                }
+                else
+                {
+                    return Response("Erro na remoção do Usuario: " + id);
+                }
+            }
+            catch (Exception e)
+            {
+                return Response(e.Message);
             }
         }
 
@@ -228,6 +285,25 @@ namespace Tributacao_Singular.Servico.Controllers
             };
 
             return response;
+        }
+
+        public static string HashPassword(string password)
+        {
+            byte[] salt;
+            byte[] buffer2;
+            if (password == null)
+            {
+                throw new ArgumentNullException("password");
+            }
+            using (Rfc2898DeriveBytes bytes = new Rfc2898DeriveBytes(password, 0x10, 0x3e8))
+            {
+                salt = bytes.Salt;
+                buffer2 = bytes.GetBytes(0x20);
+            }
+            byte[] dst = new byte[0x31];
+            Buffer.BlockCopy(salt, 0, dst, 1, 0x10);
+            Buffer.BlockCopy(buffer2, 0, dst, 0x11, 0x20);
+            return Convert.ToBase64String(dst);
         }
 
         private static long ToUnixEpochDate(DateTime date)
