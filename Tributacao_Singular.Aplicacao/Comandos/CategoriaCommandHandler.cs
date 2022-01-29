@@ -72,7 +72,7 @@ namespace Tributacao_Singular.Aplicacao.Comandos
 
                 var CategoriaExiste = await respositorioCategoria.ObterPorId(request.Id);
 
-                if (CategoriaExiste == null) 
+                if (CategoriaExiste == null)
                 {
                     await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Atualizar", "Não Existe uma Categoria Informada."));
                     return false;
@@ -108,12 +108,9 @@ namespace Tributacao_Singular.Aplicacao.Comandos
                 var ProcuraCategoriaBase = await respositorioCategoria.Buscar(x => x.descricao == "CategoriaBase");
                 var categoriaBase = ProcuraCategoriaBase.ToList().FirstOrDefault();
 
-                foreach (var item in await respositorioProduto.ObterProdutosPorCategoriaId(request.Id)) 
+                foreach (var item in await respositorioProduto.ObterProdutosPorCategoriaId(request.Id))
                 {
-                        item.Categoria = categoriaBase;
-                        item.CategoriaId = categoriaBase.Id;
-
-                        await respositorioProduto.Atualizar(item);
+                    await respositorioProduto.AtualizaProdutoCategoriaBase(categoriaBase.Id, item.Id);
                 }
 
                 await respositorioCategoria.Remover(request.Id);

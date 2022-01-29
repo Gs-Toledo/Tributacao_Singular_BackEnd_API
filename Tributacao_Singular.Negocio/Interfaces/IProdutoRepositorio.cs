@@ -12,5 +12,7 @@ namespace Tributacao_Singular.Negocio.Interfaces
         Task<List<Produto>> ObterProdutosPorClienteId(Guid id);
 
         Task<List<Produto>> ObterProdutosPorCategoriaId(Guid id);
+
+        Task AtualizaProdutoCategoriaBase(Guid categoriaBaseId, Guid produtoId);
     }
 }

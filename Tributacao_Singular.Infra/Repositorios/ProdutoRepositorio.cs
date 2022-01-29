@@ -12,7 +12,12 @@ namespace Tributacao_Singular.Infra.Repositorios
 {
     public class ProdutoRepositorio : Repository<Produto>, IProdutoRepositorio
     {
-        public ProdutoRepositorio(MeuDbContext db) : base(db) { }
+        private readonly MeuDbContext db;
+
+        public ProdutoRepositorio(MeuDbContext db) : base(db) 
+        {
+            this.db = db;
+        }
 
         public async Task<List<Produto>> ObterProdutosPorClienteId(Guid id)
         {
@@ -26,6 +31,12 @@ namespace Tributacao_Singular.Infra.Repositorios
             return await Db.Produtos.AsNoTracking()
                 .Where(x => x.CategoriaId == id)
                 .ToListAsync();
+        }
+
+        public async Task AtualizaProdutoCategoriaBase(Guid categoriaBaseId, Guid produtoId) 
+        {
+            db.Database.ExecuteSqlRaw($"UPDATE dbo.Produtos SET CategoriaId = '{categoriaBaseId}' WHERE Id = '{produtoId}' ");
+            await db.CompletarAsync();
         }
     }
 }
