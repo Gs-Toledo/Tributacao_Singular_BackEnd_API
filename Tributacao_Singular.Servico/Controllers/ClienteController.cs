@@ -43,7 +43,7 @@ namespace Tributacao_Singular.Servico.Controllers
             return Response(cliente);
         }
 
-        [ClaimsAuthorize("Cliente", "Atualizar")]
+        [ClaimsAuthorize("Cliente,Administrador", "Atualizar")]
         [HttpPut("Atualizar/{id:Guid}")]
         public async Task<IActionResult> AtualizarCliente(Guid id, ClienteViewModel clienteViewModel)
         {
