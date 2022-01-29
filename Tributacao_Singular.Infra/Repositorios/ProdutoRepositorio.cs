@@ -20,5 +20,12 @@ namespace Tributacao_Singular.Infra.Repositorios
                 .Where(x => x.ClienteId == id)
                 .ToListAsync();
         }
+
+        public async Task<List<Produto>> ObterProdutosPorCategoriaId(Guid id)
+        {
+            return await Db.Produtos.AsNoTracking()
+                .Where(x => x.CategoriaId == id)
+                .ToListAsync();
+        }
     }
 }

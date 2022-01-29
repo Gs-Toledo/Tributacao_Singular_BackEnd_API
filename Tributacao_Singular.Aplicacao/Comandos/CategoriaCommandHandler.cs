@@ -105,26 +105,15 @@ namespace Tributacao_Singular.Aplicacao.Comandos
             {
                 if (!ValidarComando(request)) return false;
 
-                var CategoriaExiste = await respositorioCategoria.ObterCategoriaProdutosPorId(request.Id);
+                var ProcuraCategoriaBase = await respositorioCategoria.Buscar(x => x.descricao == "CategoriaBase");
+                var categoriaBase = ProcuraCategoriaBase.ToList().FirstOrDefault();
 
-                if (CategoriaExiste == null)
+                foreach (var item in await respositorioProduto.ObterProdutosPorCategoriaId(request.Id)) 
                 {
-                    await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Remover", "Não Existe uma Categoria Informada."));
-                    return false;
-                }
-
-                if(CategoriaExiste.Produtos.Count() > 0) 
-                {
-                    var ProcuraCategoriaBase = await respositorioCategoria.Buscar(x => x.descricao == "CategoriaBase");
-                    var categoriaBase = ProcuraCategoriaBase.ToList().FirstOrDefault();
-
-                    foreach (var item in CategoriaExiste.Produtos) 
-                    {
                         item.Categoria = categoriaBase;
                         item.CategoriaId = categoriaBase.Id;
 
                         await respositorioProduto.Atualizar(item);
-                    }
                 }
 
                 await respositorioCategoria.Remover(request.Id);

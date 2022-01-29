@@ -117,20 +117,9 @@ namespace Tributacao_Singular.Aplicacao.Comandos
             {
                 if (!ValidarComando(request)) return false;
 
-                var ClienteExiste = await respositorioCliente.ObterClienteProdutosPorId(request.Id);
-
-                if (ClienteExiste == null)
+                foreach (var item in await respositorioProduto.ObterProdutosPorClienteId(request.Id)) 
                 {
-                    await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Remover", "Não Existe um Cliente Informado."));
-                    return false;
-                }
-
-                if (ClienteExiste.Produtos.Count() > 0) 
-                {
-                    foreach (var item in ClienteExiste.Produtos) 
-                    {
-                        await respositorioProduto.Remover(item.Id);
-                    }
+                   await respositorioProduto.Remover(item.Id);
                 }
 
                 await respositorioCliente.Remover(request.Id);

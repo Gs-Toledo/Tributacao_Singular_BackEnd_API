@@ -78,14 +78,6 @@ namespace Tributacao_Singular.Aplicacao.Comandos
             {
                 if (!ValidarComando(request)) return false;
 
-                var produto = await respositorioProduto.ObterPorId(request.Id);
-
-                if (produto == null) 
-                {
-                    await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Remover", "Produto informado não existe"));
-                    return false;
-                }
-
                 await respositorioProduto.Remover(request.Id);
 
                 return true;
