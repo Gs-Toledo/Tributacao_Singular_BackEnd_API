@@ -101,6 +101,16 @@ namespace Tributacao_Singular.Servico.Controllers
         {
             if (!ModelState.IsValid) return ValidateModelState(ModelState);
 
+            if (await _userManager.FindByEmailAsync(registerUser.Email) != null)
+            {
+                return Response("Email já sendo utilizado");
+            }
+
+            if (await clienteServicoApp.ObterClienteProdutosPorCnpjAsync(registerUser.cnpj) != null) 
+            {
+                return Response("Cnpj já sendo utilizado");
+            }
+
             var user = new IdentityUser
             {
                 UserName = registerUser.Email,

@@ -61,6 +61,11 @@ namespace Tributacao_Singular.Aplicacao.Servicos
             return mapper.Map<ClienteViewModel>(await respositorioCliente.ObterClienteProdutosPorId(id));
         }
 
+        public async Task<ClienteViewModel> ObterClienteProdutosPorCnpjAsync(string cnpj)
+        {
+            return mapper.Map<ClienteViewModel>(await respositorioCliente.ObterClienteProdutosPorCnpj(cnpj));
+        }
+
         public async Task<IEnumerable<ClienteViewModel>> ObterTodosClienteProdutosAsync()
         {
             return mapper.Map<IEnumerable<ClienteViewModel>>(await respositorioCliente.ObterTodosClienteProdutos());

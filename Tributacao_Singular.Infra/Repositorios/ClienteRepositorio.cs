@@ -30,6 +30,15 @@ namespace Tributacao_Singular.Infra.Repositorios
 
         }
 
+        public async Task<Cliente> ObterClienteProdutosPorCnpj(string cnpj)
+        {
+            return await Db.Clientes.AsNoTracking()
+                .Include(x => x.Produtos)
+                .ThenInclude(x => x.Categoria)
+                .FirstOrDefaultAsync(x => x.cnpj == cnpj);
+
+        }
+
         public async Task<IEnumerable<Cliente>> ObterTodosClienteProdutos()
         {
             return await Db.Clientes.AsNoTracking()
