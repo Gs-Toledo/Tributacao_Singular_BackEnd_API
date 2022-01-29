@@ -76,8 +76,8 @@ namespace Tributacao_Singular.Aplicacao.AutoMapper
                   x.IPI
            ));
 
-            CreateMap<CategoriaViewModel, AtualizarCategoriaComando>()
-              .ConstructUsing(x => new AtualizarCategoriaComando(
+            CreateMap<CategoriaViewModel, AdicionarCategoriaComando>()
+              .ConstructUsing(x => new AdicionarCategoriaComando(
                   x.Id,
                   x.descricao,
                   x.ICMS,
