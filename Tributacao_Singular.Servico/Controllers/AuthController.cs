@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -41,10 +42,20 @@ namespace Tributacao_Singular.Servico.Controllers
             this.clienteServicoApp = clienteServicoApp;
         }
 
-        [HttpGet("Obter-Todos")]
-        public async Task<IActionResult> ObterTodos()
+        [HttpGet("Obter-Todos/{id:Guid}")]
+        public async Task<IActionResult> ObterTodos(Guid id)
         {
-            var listaUsuarios = _userManager.Users.Select(x => new { x.Id ,x.Email}).ToList();
+            var listaUsuarios = new List<IdentityUser>();
+                
+            foreach(var item in await _userManager.Users.ToListAsync()) 
+            {
+                var claim = (await _userManager.GetClaimsAsync(item)).FirstOrDefault();
+
+                if (claim.Type != "Cliente" && !item.Id.Equals(id.ToString())) 
+                {
+                    listaUsuarios.Add(item);
+                }
+            }
 
             return Response(listaUsuarios);
         }
@@ -213,14 +224,6 @@ namespace Tributacao_Singular.Servico.Controllers
         {
             try
             {
-                if (clienteServicoApp.ObterPorIdAsync(id) != null) 
-                {
-                    var resultRemocao = await clienteServicoApp.RemoverAsync(id);
-
-                    if(!resultRemocao)
-                        return Response("Erro na remoção do usuario cliente!");
-                }
-
                 var user = await _userManager.FindByIdAsync(id.ToString());
 
                 var result = await _userManager.DeleteAsync(user);
