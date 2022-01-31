@@ -84,12 +84,12 @@ namespace Tributacao_Singular.Aplicacao.Comandos
             }
             catch (DominioException ex)
             {
-                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Atualizar", ex.Message));
+                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Remover", ex.Message));
                 return false;
             }
             catch (Exception ex)
             {
-                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Atualizar", ex.Message));
+                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Remover", ex.Message));
                 return false;
             }
         }

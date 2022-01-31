@@ -24,12 +24,14 @@ namespace Tributacao_Singular.Aplicacao.Comandos
         private readonly IMediatorHandler mediadorHandler;
         private readonly ICategoriaRepositorio respositorioCategoria;
         private readonly IMapper mapper;
+        private readonly IProdutoRepositorio respositorioProduto;
 
-        public CategoriaCommandHandler(IMediatorHandler mediadorHandler, ICategoriaRepositorio respositorioCategoria, IMapper mapper)
+        public CategoriaCommandHandler(IMediatorHandler mediadorHandler, ICategoriaRepositorio respositorioCategoria, IMapper mapper, IProdutoRepositorio respositorioProduto)
         {
             this.mediadorHandler = mediadorHandler;
             this.respositorioCategoria = respositorioCategoria;
             this.mapper = mapper;
+            this.respositorioProduto = respositorioProduto;
         }
 
         public async Task<bool> Handle(AdicionarCategoriaComando request, CancellationToken cancellationToken)
@@ -70,7 +72,7 @@ namespace Tributacao_Singular.Aplicacao.Comandos
 
                 var CategoriaExiste = await respositorioCategoria.ObterPorId(request.Id);
 
-                if (CategoriaExiste == null) 
+                if (CategoriaExiste == null)
                 {
                     await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Atualizar", "Não Existe uma Categoria Informada."));
                     return false;
@@ -102,6 +104,14 @@ namespace Tributacao_Singular.Aplicacao.Comandos
             try
             {
                 if (!ValidarComando(request)) return false;
+
+                var ProcuraCategoriaBase = await respositorioCategoria.Buscar(x => x.descricao == "CategoriaBase");
+                var categoriaBase = ProcuraCategoriaBase.ToList().FirstOrDefault();
+
+                foreach (var item in await respositorioProduto.ObterProdutosPorCategoriaId(request.Id))
+                {
+                    await respositorioProduto.AtualizaProdutoCategoriaBase(categoriaBase.Id, item.Id);
+                }
 
                 await respositorioCategoria.Remover(request.Id);
 

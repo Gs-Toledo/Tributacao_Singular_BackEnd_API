@@ -1,10 +1,12 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Tributacao_Singular.Aplicacao.Servicos;
 using Tributacao_Singular.Aplicacao.ViewModels;
@@ -40,6 +42,24 @@ namespace Tributacao_Singular.Servico.Controllers
             this.clienteServicoApp = clienteServicoApp;
         }
 
+        [HttpGet("Obter-Todos/{id:Guid}")]
+        public async Task<IActionResult> ObterTodos(Guid id)
+        {
+            var listaUsuarios = new List<IdentityUser>();
+                
+            foreach(var item in await _userManager.Users.ToListAsync()) 
+            {
+                var claim = (await _userManager.GetClaimsAsync(item)).FirstOrDefault();
+
+                if (claim.Type != "Cliente" && !item.Id.Equals(id.ToString())) 
+                {
+                    listaUsuarios.Add(item);
+                }
+            }
+
+            return Response(listaUsuarios);
+        }
+
         [HttpPost("nova-conta-Administrador")]
         public async Task<IActionResult> RegistrarAdm(RegisterUserViewModel registerUser)
         {
@@ -56,7 +76,7 @@ namespace Tributacao_Singular.Servico.Controllers
             if (result.Succeeded)
             {
                 //add permissao de Adm
-                await _userManager.AddClaimAsync(user, new Claim("Administrador", "Listar,Adicionar,Atualizar,Excluir"));
+                await _userManager.AddClaimAsync(user, new Claim("Administrador", "Listar,Adicionar,Atualizar,Remover"));
 
                 return Response(await GerarJwt(user.Email));
             }
@@ -84,7 +104,7 @@ namespace Tributacao_Singular.Servico.Controllers
             if (result.Succeeded)
             {
                 //add permissao de Tributarista
-                await _userManager.AddClaimAsync(user, new Claim("Tributarista", "Listar,Adicionar,Atualizar,Excluir"));
+                await _userManager.AddClaimAsync(user, new Claim("Tributarista", "Listar,Adicionar,Atualizar,Remover"));
 
                 return Response(await GerarJwt(user.Email));
             }
@@ -101,6 +121,16 @@ namespace Tributacao_Singular.Servico.Controllers
         {
             if (!ModelState.IsValid) return ValidateModelState(ModelState);
 
+            if (await _userManager.FindByEmailAsync(registerUser.Email) != null)
+            {
+                return Response("Email já sendo utilizado");
+            }
+
+            if (await clienteServicoApp.ObterClienteProdutosPorCnpjAsync(registerUser.cnpj) != null) 
+            {
+                return Response("Cnpj já sendo utilizado");
+            }
+
             var user = new IdentityUser
             {
                 UserName = registerUser.Email,
@@ -112,7 +142,7 @@ namespace Tributacao_Singular.Servico.Controllers
             if (result.Succeeded)
             {
                 //add permissao de Usuario
-                await _userManager.AddClaimAsync(user, new Claim("Cliente", "Listar,Adicionar,Atualizar,Excluir,AdicionarProduto"));
+                await _userManager.AddClaimAsync(user, new Claim("Cliente", "Listar,Adicionar,Atualizar,Remover,AdicionarProduto"));
 
                 var userIdentityDb = await _userManager.FindByEmailAsync(user.Email);
 
@@ -154,6 +184,63 @@ namespace Tributacao_Singular.Servico.Controllers
 
             NotifyError(string.Empty, "Usuário ou Senha incorretos");
             return Response(loginUser);
+        }
+
+        [HttpPut("Atualizar/{id:Guid}")]
+        public async Task<IActionResult> AtualizarUsuario(Guid id, UpdateUserViewModel updateUserViewModel)
+        {
+            if (!ModelState.IsValid) return ValidateModelState(ModelState);
+
+            var user = await _userManager.FindByIdAsync(id.ToString());
+
+            if (user == null) 
+            {
+                NotifyError(string.Empty, "O id informado não é o mesmo que foi passado na query");
+                return Response(updateUserViewModel);
+            }
+
+            user.UserName = updateUserViewModel.Email;
+            user.Email = updateUserViewModel.Email;
+
+            user.NormalizedUserName = updateUserViewModel.Email.ToUpper();
+            user.NormalizedEmail = updateUserViewModel.Email.ToUpper();
+
+            user.PasswordHash = HashPassword(updateUserViewModel.Password);
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("Usuario " + id.ToString() + " atualizado com sucesso"); ;
+                return Response("Usuario atualizado com sucesso");
+            }
+
+            NotifyError(string.Empty, "Erro na ataulaização");
+            return Response(updateUserViewModel);
+        }
+
+        [HttpDelete("Remover/{id:Guid}")]
+        public async Task<IActionResult> RemoverCliente(Guid id)
+        {
+            try
+            {
+                var user = await _userManager.FindByIdAsync(id.ToString());
+
+                var result = await _userManager.DeleteAsync(user);
+
+                if (result.Succeeded)
+                {
+                    return Response("Usuario Removido com Sucesso!");
+                }
+                else
+                {
+                    return Response("Erro na remoção do Usuario: " + id);
+                }
+            }
+            catch (Exception e)
+            {
+                return Response(e.Message);
+            }
         }
 
         private async Task<LoginResponseViewModel> GerarJwt(string email)
@@ -201,6 +288,25 @@ namespace Tributacao_Singular.Servico.Controllers
             };
 
             return response;
+        }
+
+        public static string HashPassword(string password)
+        {
+            byte[] salt;
+            byte[] buffer2;
+            if (password == null)
+            {
+                throw new ArgumentNullException("password");
+            }
+            using (Rfc2898DeriveBytes bytes = new Rfc2898DeriveBytes(password, 0x10, 0x3e8))
+            {
+                salt = bytes.Salt;
+                buffer2 = bytes.GetBytes(0x20);
+            }
+            byte[] dst = new byte[0x31];
+            Buffer.BlockCopy(salt, 0, dst, 1, 0x10);
+            Buffer.BlockCopy(buffer2, 0, dst, 0x11, 0x20);
+            return Convert.ToBase64String(dst);
         }
 
         private static long ToUnixEpochDate(DateTime date)

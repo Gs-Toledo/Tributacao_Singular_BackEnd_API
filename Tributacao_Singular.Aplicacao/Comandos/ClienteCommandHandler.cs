@@ -23,13 +23,15 @@ namespace Tributacao_Singular.Aplicacao.Comandos
     {
         private readonly IMediatorHandler mediadorHandler;
         private readonly IClienteRepositorio respositorioCliente;
+        private readonly IProdutoRepositorio respositorioProduto;
         private readonly IMapper mapper;
 
-        public ClienteCommandHandler(IMediatorHandler mediadorHandler, IClienteRepositorio respositorioCliente, IMapper mapper)
+        public ClienteCommandHandler(IMediatorHandler mediadorHandler, IClienteRepositorio respositorioCliente, IMapper mapper, IProdutoRepositorio respositorioProduto)
         {
             this.mediadorHandler = mediadorHandler;
             this.respositorioCliente = respositorioCliente;
             this.mapper = mapper;
+            this.respositorioProduto = respositorioProduto;
         }
 
         public async Task<bool> Handle(AdicionarClienteComando request, CancellationToken cancellationToken)
@@ -114,6 +116,11 @@ namespace Tributacao_Singular.Aplicacao.Comandos
             try
             {
                 if (!ValidarComando(request)) return false;
+
+                foreach (var item in await respositorioProduto.ObterProdutosPorClienteId(request.Id)) 
+                {
+                   await respositorioProduto.Remover(item.Id);
+                }
 
                 await respositorioCliente.Remover(request.Id);
 

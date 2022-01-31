@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Tributacao_Singular.Aplicacao.Servicos;
 using Tributacao_Singular.Aplicacao.ViewModels;
@@ -16,13 +17,16 @@ namespace Tributacao_Singular.Servico.Controllers
     public class ClienteController : ApiControllerBase
     {
         private readonly IClienteServicoApp clienteServicoApp;
+        private readonly UserManager<IdentityUser> _userManager;
 
         public ClienteController(IMediatorHandler mediadorHandler,
                               INotificationHandler<NotificacaoDominio> notificacoesHandler,
                               IUser user,
+                              UserManager<IdentityUser> _userManager,
                               IClienteServicoApp clienteServicoApp) : base(notificacoesHandler, mediadorHandler, user)
         {
             this.clienteServicoApp = clienteServicoApp;
+            this._userManager = _userManager;
         }
 
         [ClaimsAuthorize("Cliente,Administrador", "Listar")]
@@ -35,7 +39,7 @@ namespace Tributacao_Singular.Servico.Controllers
         }
 
         [ClaimsAuthorize("Cliente,Administrador", "Listar")]
-        [HttpGet("Obter-Por-Id/{id:guid}")]
+        [HttpGet("Obter-Por-Id/{id:Guid}")]
         public async Task<IActionResult> ObterPorId(Guid id)
         {
             var cliente = await clienteServicoApp.ObterClienteProdutosPorIdAsync(id);
@@ -43,9 +47,9 @@ namespace Tributacao_Singular.Servico.Controllers
             return Response(cliente);
         }
 
-        [ClaimsAuthorize("Cliente", "Atualizar")]
-        [HttpPut("Atualizar/{id:guid}")]
-        public async Task<IActionResult> AtualizarCliente(Guid id, [FromBody] ClienteViewModel clienteViewModel)
+        [ClaimsAuthorize("Cliente,Administrador", "Atualizar")]
+        [HttpPut("Atualizar/{id:Guid}")]
+        public async Task<IActionResult> AtualizarCliente(Guid id, ClienteViewModel clienteViewModel)
         {
             if (id != clienteViewModel.Id)
             {
@@ -60,13 +64,31 @@ namespace Tributacao_Singular.Servico.Controllers
             return Response("Cliente Atualizado com Sucesso!");
         }
 
-        [ClaimsAuthorize("Cliente", "Remover")]
-        [HttpDelete("Remover/{id:guid}")]
-        public async Task<IActionResult> RemoverCliente(Guid Id)
+        [ClaimsAuthorize("Administrador", "Remover")]
+        [HttpDelete("Remover/{id:Guid}")]
+        public async Task<IActionResult> RemoverCliente(Guid id)
         {
-            await clienteServicoApp.RemoverAsync(Id);
+            try 
+            {
+                var user = await _userManager.FindByIdAsync(id.ToString());
 
-            return Response("Cliente Removido com Sucesso!");
+                var result = await _userManager.DeleteAsync(user);
+
+                if (result.Succeeded)
+                {
+                    await clienteServicoApp.RemoverAsync(id);
+
+                    return Response("Cliente Removido com Sucesso!");
+                }
+                else
+                {
+                    return Response("Erro na remoção do Cliente: " + id);
+                }
+            }
+            catch(Exception e) 
+            {
+                return Response(e.Message);
+            }
         }
 
     }

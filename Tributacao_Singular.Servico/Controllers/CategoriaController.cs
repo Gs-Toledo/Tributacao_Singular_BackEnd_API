@@ -56,7 +56,7 @@ namespace Tributacao_Singular.Servico.Controllers
 
         [ClaimsAuthorize("Tributarista", "Atualizar")]
         [HttpPut("Atualizar/{id:guid}")]
-        public async Task<IActionResult> AtualizarCliente(Guid id, [FromBody] CategoriaViewModel categoriaViewModel)
+        public async Task<IActionResult> AtualizarCliente(Guid id, CategoriaViewModel categoriaViewModel)
         {
             if (id != categoriaViewModel.Id)
             {
@@ -71,7 +71,7 @@ namespace Tributacao_Singular.Servico.Controllers
             return Response("Cliente Atualizado com Sucesso!");
         }
 
-        [ClaimsAuthorize("Tributarista", "Remover")]
+        [ClaimsAuthorize("Tributarista,Administrador", "Remover")]
         [HttpDelete("Remover/{id:guid}")]
         public async Task<IActionResult> RemoverCliente(Guid Id)
         {

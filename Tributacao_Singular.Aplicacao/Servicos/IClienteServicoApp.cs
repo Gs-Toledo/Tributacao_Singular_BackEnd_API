@@ -21,6 +21,8 @@ namespace Tributacao_Singular.Aplicacao.Servicos
 
         Task<ClienteViewModel> ObterClienteProdutosPorIdAsync(Guid id);
 
+        Task<ClienteViewModel> ObterClienteProdutosPorCnpjAsync(string cnpj);
+
         Task<IEnumerable<ClienteViewModel>> ObterTodosClienteProdutosAsync();
     }
 }
