@@ -36,7 +36,7 @@ namespace Tributacao_Singular.Infra.Contexto
             base.OnModelCreating(modelBuilder);
         }
 
-        public Task<int> CompletarAsync(CancellationToken cancellationToken = new CancellationToken())
+        public Task<int> CompletarAsync(CancellationToken cancellationToken)
         {
             foreach (var entry in ChangeTracker.Entries().Where(entry => entry.Entity.GetType().GetProperty("DataCadastro") != null))
             {
@@ -52,6 +52,24 @@ namespace Tributacao_Singular.Infra.Contexto
             }
 
             return base.SaveChangesAsync(cancellationToken);
+        }
+
+        public Task<int> CompletarAsync()
+        {
+            foreach (var entry in ChangeTracker.Entries().Where(entry => entry.Entity.GetType().GetProperty("DataCadastro") != null))
+            {
+                if (entry.State == EntityState.Added)
+                {
+                    entry.Property("DataCadastro").CurrentValue = DateTime.Now;
+                }
+
+                if (entry.State == EntityState.Modified)
+                {
+                    entry.Property("DataCadastro").IsModified = false;
+                }
+            }
+
+            return base.SaveChangesAsync(new CancellationToken());
         }
     }
 }

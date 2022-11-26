@@ -37,10 +37,10 @@ namespace Tributacao_Singular.Aplicacao.Servicos
             return await mediador.EnviarComando(adicionarComando);
         }
 
-        public async Task<bool> RemoverAsync(Guid Id)
+        public async Task<bool> RemoverAsync(Guid id)
         {
             var clienteModel = new ClienteViewModel();
-            clienteModel.Id = Id;
+            clienteModel.Id = id;
 
             var adicionarComando = mapper.Map<RemoverClienteComando>(clienteModel);
             return await mediador.EnviarComando(adicionarComando);

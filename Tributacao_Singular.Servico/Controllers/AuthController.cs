@@ -46,12 +46,12 @@ namespace Tributacao_Singular.Servico.Controllers
         public async Task<IActionResult> ObterTodos(Guid id)
         {
             var listaUsuarios = new List<IdentityUser>();
-                
-            foreach(var item in await _userManager.Users.ToListAsync()) 
+
+            foreach (var item in await _userManager.Users.ToListAsync())
             {
                 var claim = (await _userManager.GetClaimsAsync(item)).FirstOrDefault();
 
-                if (claim.Type != "Cliente" && !item.Id.Equals(id.ToString())) 
+                if(claim != null && (claim.Type != "Cliente" && !item.Id.Equals(id.ToString()))) 
                 {
                     listaUsuarios.Add(item);
                 }
@@ -126,7 +126,7 @@ namespace Tributacao_Singular.Servico.Controllers
                 return Response("Email já sendo utilizado");
             }
 
-            if (await clienteServicoApp.ObterClienteProdutosPorCnpjAsync(registerUser.cnpj) != null) 
+            if (await clienteServicoApp.ObterClienteProdutosPorCnpjAsync(registerUser.cnpj) != null)
             {
                 return Response("Cnpj já sendo utilizado");
             }
@@ -193,7 +193,7 @@ namespace Tributacao_Singular.Servico.Controllers
 
             var user = await _userManager.FindByIdAsync(id.ToString());
 
-            if (user == null) 
+            if (user == null)
             {
                 NotifyError(string.Empty, "O id informado não é o mesmo que foi passado na query");
                 return Response(updateUserViewModel);
@@ -211,7 +211,7 @@ namespace Tributacao_Singular.Servico.Controllers
 
             if (result.Succeeded)
             {
-                _logger.LogInformation("Usuario " + id.ToString() + " atualizado com sucesso"); ;
+                _logger.LogInformation("Usuario " + id.ToString() + " atualizado com sucesso");
                 return Response("Usuario atualizado com sucesso");
             }
 

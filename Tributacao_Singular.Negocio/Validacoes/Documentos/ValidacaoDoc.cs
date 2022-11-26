@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Tributacao_Singular.Negocio.Validacoes.Documentos
 {
-    public class CpfValidacao
+    public static class CpfValidacao
     {
         public const int TamanhoCpf = 11;
 
@@ -61,7 +61,7 @@ namespace Tributacao_Singular.Negocio.Validacoes.Documentos
         private const int Modulo = 11;
         private readonly List<int> _multiplicadores = new List<int> { 2, 3, 4, 5, 6, 7, 8, 9 };
         private readonly IDictionary<int, string> _substituicoes = new Dictionary<int, string>();
-        private bool _complementarDoModulo = true;
+        private readonly bool _complementarDoModulo = true;
 
         public DigitoVerificador(string numero)
         {
@@ -93,7 +93,7 @@ namespace Tributacao_Singular.Negocio.Validacoes.Documentos
 
         public string CalculaDigito()
         {
-            return !(_numero.Length > 0) ? "" : GetDigitSum();
+            return (_numero.Length <= 0) ? "" : GetDigitSum();
         }
 
         private string GetDigitSum()
@@ -114,19 +114,19 @@ namespace Tributacao_Singular.Negocio.Validacoes.Documentos
         }
     }
 
-    public class Utils
+    public static class Utils
     {
         public static string ApenasNumeros(string valor)
         {
-            var onlyNumber = "";
-            foreach (var s in valor)
+            StringBuilder onlyNumber = new StringBuilder();
+            foreach (var s in from s in valor
+                              where char.IsDigit(s)
+                              select s)
             {
-                if (char.IsDigit(s))
-                {
-                    onlyNumber += s;
-                }
+                onlyNumber.Append(s);
             }
-            return onlyNumber.Trim();
+
+            return onlyNumber.ToString().Trim();
         }
     }
 }
