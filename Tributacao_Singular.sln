@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tributacao_Singular.Negocio
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tributacao_Singular.Infra", "Tributacao_Singular.Infra\Tributacao_Singular.Infra.csproj", "{A7A899D3-60AF-4DAC-91C3-7BEA707DA9C0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tributacao_Singular.Servico", "Tributacao_Singular.Servico\Tributacao_Singular.Servico.csproj", "{C5BF8A14-E856-4C7E-A2C5-A19FE4EC537C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tributacao_Singular.Servico", "Tributacao_Singular.Servico\Tributacao_Singular.Servico.csproj", "{C5BF8A14-E856-4C7E-A2C5-A19FE4EC537C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tributacao_Singular.Teste", "Tributacao_Singular.Teste\Tributacao_Singular.Teste.csproj", "{38151280-FEAC-4E37-A182-D77EC2C434FE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{C5BF8A14-E856-4C7E-A2C5-A19FE4EC537C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C5BF8A14-E856-4C7E-A2C5-A19FE4EC537C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C5BF8A14-E856-4C7E-A2C5-A19FE4EC537C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38151280-FEAC-4E37-A182-D77EC2C434FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38151280-FEAC-4E37-A182-D77EC2C434FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38151280-FEAC-4E37-A182-D77EC2C434FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38151280-FEAC-4E37-A182-D77EC2C434FE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
