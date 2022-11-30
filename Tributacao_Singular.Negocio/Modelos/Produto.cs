@@ -38,7 +38,7 @@ namespace Tributacao_Singular.Negocio.Modelos
         {
             this.descricao = descricao;
             this.NCM = NCM;
-            this.NCM = NCM;
+            this.EAN = EAN;
             this.Status = status;
             Categoria = categoria;
             Cliente = cliente;
