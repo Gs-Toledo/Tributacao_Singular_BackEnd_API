@@ -9,11 +9,11 @@ using Tributacao_Singular.Infra.Contexto;
 
 #nullable disable
 
-namespace Tributacao_Singular.Infra.Migrations
+namespace Tributacao_Singular.Infra.Migrations.MeuDb
 {
     [DbContext(typeof(MeuDbContext))]
-    [Migration("20220123165230_Troca de Mapeamento")]
-    partial class TrocadeMapeamento
+    [Migration("20221204224234_MigDbContextUm")]
+    partial class MigDbContextUm
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -67,6 +67,24 @@ namespace Tributacao_Singular.Infra.Migrations
                     b.ToTable("Clientes", (string)null);
                 });
 
+            modelBuilder.Entity("Tributacao_Singular.Negocio.Modelos.Foto", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<byte[]>("Src")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<Guid>("idUsuario")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Fotos");
+                });
+
             modelBuilder.Entity("Tributacao_Singular.Negocio.Modelos.Log", b =>
                 {
                     b.Property<Guid>("Id")
@@ -113,6 +131,9 @@ namespace Tributacao_Singular.Infra.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(8)");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.Property<string>("descricao")
                         .IsRequired()
                         .HasColumnType("varchar(150)");
@@ -131,11 +152,13 @@ namespace Tributacao_Singular.Infra.Migrations
                     b.HasOne("Tributacao_Singular.Negocio.Modelos.Categoria", "Categoria")
                         .WithMany("Produtos")
                         .HasForeignKey("CategoriaId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
                     b.HasOne("Tributacao_Singular.Negocio.Modelos.Cliente", "Cliente")
                         .WithMany("Produtos")
                         .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
                     b.Navigation("Categoria");

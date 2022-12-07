@@ -6,6 +6,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using Tributacao_Singular.Aplicacao.Comandos;
 using Tributacao_Singular.Aplicacao.Comandos.CategoriaComandos;
 using Tributacao_Singular.Aplicacao.Comandos.ClienteComandos;
+using Tributacao_Singular.Aplicacao.Comandos.FotoComandos;
 using Tributacao_Singular.Aplicacao.Comandos.ProdutoComandos;
 using Tributacao_Singular.Aplicacao.Servicos;
 using Tributacao_Singular.Infra.Contexto;
@@ -48,15 +49,21 @@ namespace Tributacao_Singular.Servico.Configuracoes
             services.AddScoped<IRequestHandler<RemoverCategoriaComando, bool>, CategoriaCommandHandler>();
             services.AddScoped<IRequestHandler<AdicionarCategoriaComando, bool>, CategoriaCommandHandler>();
 
+            services.AddScoped<IRequestHandler<AtualizarFotoComando, bool>, FotoCommandHandler>();
+            services.AddScoped<IRequestHandler<RemoverFotoComando, bool>, FotoCommandHandler>();
+            services.AddScoped<IRequestHandler<AdicionarFotoComando, bool>, FotoCommandHandler>();
+
             //Servicos
             services.AddScoped<IClienteServicoApp, ClienteServicoApp>();
             services.AddScoped<IProdutoServicoApp, ProdutoServicoApp>();
             services.AddScoped<ICategoriaServicoApp, CategoriaServicoApp>();
+            services.AddScoped<IFotoServicoApp, FotoServicoApp>();
 
             //Repositorio
             services.AddScoped<ICategoriaRepositorio, CategoriaRepositorio>();
             services.AddScoped<IClienteRepositorio, ClienteRepositorio>();
             services.AddScoped<IProdutoRepositorio, ProdutoRepositorio>();
+            services.AddScoped<IFotoRepositorio, FotoRepositorio>();
 
             return services;
         }

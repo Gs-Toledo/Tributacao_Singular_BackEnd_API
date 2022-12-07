@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Tributacao_Singular.Infra.Migrations.ApplicationDb
+namespace Tributacao_Singular.Infra.Migrations
 {
-    public partial class IdentityDeVerdade : Migration
+    public partial class MigUm : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Tributacao_Singular.Infra.Migrations
+namespace Tributacao_Singular.Infra.Migrations.MeuDb
 {
-    public partial class Identity : Migration
+    public partial class MigDbContextUm : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -38,6 +38,19 @@ namespace Tributacao_Singular.Infra.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Fotos",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Src = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    idUsuario = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Fotos", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Logs",
                 columns: table => new
                 {
@@ -60,6 +73,8 @@ namespace Tributacao_Singular.Infra.Migrations
                     descricao = table.Column<string>(type: "varchar(150)", nullable: false),
                     NCM = table.Column<string>(type: "varchar(8)", nullable: false),
                     EAN = table.Column<string>(type: "varchar(13)", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    ClienteId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CategoriaId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
@@ -70,57 +85,40 @@ namespace Tributacao_Singular.Infra.Migrations
                         column: x => x.CategoriaId,
                         principalTable: "Categorias",
                         principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ClienteProduto",
-                columns: table => new
-                {
-                    ClientesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ProdutosId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ClienteProduto", x => new { x.ClientesId, x.ProdutosId });
                     table.ForeignKey(
-                        name: "FK_ClienteProduto_Clientes_ClientesId",
-                        column: x => x.ClientesId,
+                        name: "FK_Produtos_Clientes_ClienteId",
+                        column: x => x.ClienteId,
                         principalTable: "Clientes",
                         principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_ClienteProduto_Produtos_ProdutosId",
-                        column: x => x.ProdutosId,
-                        principalTable: "Produtos",
-                        principalColumn: "Id");
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ClienteProduto_ProdutosId",
-                table: "ClienteProduto",
-                column: "ProdutosId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Produtos_CategoriaId",
                 table: "Produtos",
                 column: "CategoriaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Produtos_ClienteId",
+                table: "Produtos",
+                column: "ClienteId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ClienteProduto");
+                name: "Fotos");
 
             migrationBuilder.DropTable(
                 name: "Logs");
-
-            migrationBuilder.DropTable(
-                name: "Clientes");
 
             migrationBuilder.DropTable(
                 name: "Produtos");
 
             migrationBuilder.DropTable(
                 name: "Categorias");
+
+            migrationBuilder.DropTable(
+                name: "Clientes");
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Tributacao_Singular.Aplicacao.Comandos.CategoriaComandos;
 using Tributacao_Singular.Aplicacao.Comandos.ClienteComandos;
+using Tributacao_Singular.Aplicacao.Comandos.FotoComandos;
 using Tributacao_Singular.Aplicacao.Comandos.ProdutoComandos;
 using Tributacao_Singular.Aplicacao.ViewModels;
 using Tributacao_Singular.Negocio.Modelos;
@@ -85,11 +86,32 @@ namespace Tributacao_Singular.Aplicacao.AutoMapper
                   x.IPI
            ));
 
+            CreateMap<FotoViewModel, RemoverFotoComando>()
+              .ConstructUsing(x => new RemoverFotoComando(
+                  x.Id
+           ));
+
+            CreateMap<FotoViewModel, AtualizarFotoComando>()
+              .ConstructUsing(x => new AtualizarFotoComando(
+                  x.Id,
+                  x.Src,
+                  x.idUsuario
+           ));
+
+            CreateMap<FotoViewModel, AdicionarFotoComando>()
+              .ConstructUsing(x => new AdicionarFotoComando(
+                  x.Id,
+                  x.Src,
+                  x.idUsuario
+           ));
+
             CreateMap<ClienteViewModel, Cliente>().ReverseMap();
 
             CreateMap<ProdutoViewModel, Produto>().ReverseMap();
 
             CreateMap<CategoriaViewModel, Categoria>().ReverseMap();
+
+            CreateMap<FotoViewModel, Foto>().ReverseMap();
         }
     }
 }

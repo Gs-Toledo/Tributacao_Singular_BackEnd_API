@@ -3,19 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tributacao_Singular.Infra.Contexto;
 
 #nullable disable
 
-namespace Tributacao_Singular.Infra.Migrations
+namespace Tributacao_Singular.Infra.Migrations.MeuDb
 {
     [DbContext(typeof(MeuDbContext))]
-    [Migration("20220123224426_Sla")]
-    partial class Sla
+    partial class MeuDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -65,6 +63,24 @@ namespace Tributacao_Singular.Infra.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Clientes", (string)null);
+                });
+
+            modelBuilder.Entity("Tributacao_Singular.Negocio.Modelos.Foto", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<byte[]>("Src")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<Guid>("idUsuario")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Fotos");
                 });
 
             modelBuilder.Entity("Tributacao_Singular.Negocio.Modelos.Log", b =>
@@ -134,11 +150,13 @@ namespace Tributacao_Singular.Infra.Migrations
                     b.HasOne("Tributacao_Singular.Negocio.Modelos.Categoria", "Categoria")
                         .WithMany("Produtos")
                         .HasForeignKey("CategoriaId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
                     b.HasOne("Tributacao_Singular.Negocio.Modelos.Cliente", "Cliente")
                         .WithMany("Produtos")
                         .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
                     b.Navigation("Categoria");

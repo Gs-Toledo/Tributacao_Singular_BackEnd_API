@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tributacao_Singular.Negocio.Modelos;
 
 namespace Tributacao_Singular.Infra.Contexto
 {
@@ -12,7 +13,7 @@ namespace Tributacao_Singular.Infra.Contexto
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
-
+            
         }
 
     }

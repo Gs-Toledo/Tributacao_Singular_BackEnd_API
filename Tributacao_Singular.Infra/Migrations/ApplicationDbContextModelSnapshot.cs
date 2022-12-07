@@ -3,19 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tributacao_Singular.Infra.Contexto;
 
 #nullable disable
 
-namespace Tributacao_Singular.Infra.Migrations.ApplicationDb
+namespace Tributacao_Singular.Infra.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220122230926_IdentityDeVerdade")]
-    partial class IdentityDeVerdade
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

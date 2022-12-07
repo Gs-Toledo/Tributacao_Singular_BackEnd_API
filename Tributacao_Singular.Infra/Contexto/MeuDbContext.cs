@@ -20,6 +20,8 @@ namespace Tributacao_Singular.Infra.Contexto
 
         public DbSet<Produto> Produtos { get; set; }
 
+        public DbSet<Foto> Fotos { get; set; }
+
         public DbSet<Log> Logs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
