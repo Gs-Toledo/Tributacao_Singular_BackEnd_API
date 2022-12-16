@@ -14,15 +14,15 @@ namespace Tributacao_Singular.Infra.Contexto
     {
         public MeuDbContext(DbContextOptions<MeuDbContext> options) : base(options) { }
 
-        public DbSet<Cliente> Clientes { get; set; }
+        public virtual DbSet<Cliente> Clientes { get; set; }
 
-        public DbSet<Categoria> Categorias { get; set; }
+        public virtual DbSet<Categoria> Categorias { get; set; }
 
-        public DbSet<Produto> Produtos { get; set; }
+        public virtual DbSet<Produto> Produtos { get; set; }
 
-        public DbSet<Foto> Fotos { get; set; }
+        public virtual DbSet<Foto> Fotos { get; set; }
 
-        public DbSet<Log> Logs { get; set; }
+        public virtual DbSet<Log> Logs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

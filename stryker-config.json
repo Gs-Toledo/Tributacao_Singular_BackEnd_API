@@ -1,0 +1,54 @@
+﻿{
+  "stryker-config": {
+	"project": "Tributacao_Singular.Aplicacao.csproj",
+    "reporters": [
+      "progress",
+      "html"
+    ],
+    "mutate": [
+      "!**/AutoMapperConfig.cs",
+      "!**/AutoMapperConfiguracaoTributacao.cs",
+      "!**/MediatorHandler.cs",
+      "!**/Evento.cs",
+      "!**/EventoDominio.cs",
+      "!**/NotificacaoDominio.cs",
+      "!**/NotificacaoDominioHandler.cs",
+      "!**/Comando.cs",
+      "!**/Mensagem.cs",
+      "!**/MeuDbContext.cs",
+      "!**/CategoriaMapping.cs",
+      "!**/ClienteMapping.cs",
+      "!**/FotoMapping.cs",
+      "!**/LogMapping.cs",
+      "!**/ProdutoMapping.cs",
+      "!**/MigDbContextUm.cs",
+      "!**/MigUm.cs",
+      "!**/CpfValidacao.cs",
+      "!**/CategoriasValidation.cs",
+      "!**/ClienteValidation.cs",
+      "!**/ProdutoValidation.cs",
+      "!**/Program.cs",
+      "!**/AspNetUser.cs",
+      "!**/ConfiguracaoApp.cs",
+      "!**/CustomAuthorization.cs",
+      "!**/IdentityMensagensPortugues.cs",
+      "!**/SwaggerSetup.cs",
+      "!**/AutoMapperSetup.cs",
+      "!**/ConfigurarJwt.cs",
+      "!**/DependencyInjectionConfig.cs",
+      "!**/IdentityConfig.cs",
+	  
+	  "!**/20221204224151_MigUm.cs",
+	  "!**/20221204224151_MigUm.Designer.cs",
+	  "!**/ApplicationDbContextModelSnapshot.cs",
+	  "!**/20221204224234_MigDbContextUm.cs",
+	  
+	  "!**/20221204224234_MigDbContextUm.cs",
+	  "!**/20221204224234_MigDbContextUm.Designer.cs",
+	  "!**/MeuDbContextModelSnapshot.cs"
+    ],
+    "ignore-methods": [
+
+    ]
+  }
+}

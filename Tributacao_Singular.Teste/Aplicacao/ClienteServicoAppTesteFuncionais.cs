@@ -27,6 +27,116 @@ namespace Tributacao_Singular.Teste.Aplicacao
         }
 
         [Fact]
+        public async Task ObterPorIdTesteAsync()
+        {
+            var mapperMock = new Mock<IMapper>();
+
+            mapperMock
+                .Setup(x => x.Map<ClienteViewModel>(It.IsAny<Cliente>()))
+                .Returns(new ClienteViewModel());
+
+            var repositorioMock = new Mock<IClienteRepositorio>();
+
+            var cliente = new Cliente();
+
+            repositorioMock
+                .Setup(x => x.ObterPorId(It.IsAny<Guid>()))
+                .ReturnsAsync(cliente);
+
+            var mediadorHandler = new Mock<IMediatorHandler>();
+
+            var servico = new ClienteServicoApp(mapperMock.Object, mediadorHandler.Object, repositorioMock.Object);
+
+            var lista = await servico.ObterPorIdAsync(It.IsAny<Guid>());
+
+            Assert.True(lista != null);
+        }
+
+        [Fact]
+        public async Task ObterPorClienteProdutosPorIdTesteAsync()
+        {
+            var mapperMock = new Mock<IMapper>();
+
+            mapperMock
+                .Setup(x => x.Map<ClienteViewModel>(It.IsAny<Cliente>()))
+                .Returns(new ClienteViewModel());
+
+            var repositorioMock = new Mock<IClienteRepositorio>();
+
+            var cliente = new Cliente();
+
+            repositorioMock
+                .Setup(x => x.ObterClienteProdutosPorId(It.IsAny<Guid>()))
+                .ReturnsAsync(cliente);
+
+            var mediadorHandler = new Mock<IMediatorHandler>();
+
+            var servico = new ClienteServicoApp(mapperMock.Object, mediadorHandler.Object, repositorioMock.Object);
+
+            var lista = await servico.ObterClienteProdutosPorIdAsync(It.IsAny<Guid>());
+
+            Assert.True(lista != null);
+        }
+
+        [Fact]
+        public async Task ObterPorClienteProdutosPorCnpjTesteAsync()
+        {
+            var mapperMock = new Mock<IMapper>();
+
+            mapperMock
+                .Setup(x => x.Map<ClienteViewModel>(It.IsAny<Cliente>()))
+                .Returns(new ClienteViewModel());
+
+            var repositorioMock = new Mock<IClienteRepositorio>();
+
+            var cliente = new Cliente();
+
+            repositorioMock
+                .Setup(x => x.ObterClienteProdutosPorCnpj(It.IsAny<String>()))
+                .ReturnsAsync(cliente);
+
+            var mediadorHandler = new Mock<IMediatorHandler>();
+
+            var servico = new ClienteServicoApp(mapperMock.Object, mediadorHandler.Object, repositorioMock.Object);
+
+            var lista = await servico.ObterClienteProdutosPorCnpjAsync(It.IsAny<String>());
+
+            Assert.True(lista != null);
+        }
+
+        [Fact]
+        public async Task ListarTodosClientesProdutosTesteAsync()
+        {
+            var mapperMock = new Mock<IMapper>();
+
+            mapperMock
+                .Setup(x => x.Map<List<ClienteViewModel>>(It.IsAny<List<Cliente>>()))
+                .Returns(new List<ClienteViewModel>
+                {
+                    new ClienteViewModel()
+                });
+
+            var repositorioMock = new Mock<IClienteRepositorio>();
+
+            var categorias = new List<Cliente>()
+            {
+                new Cliente()
+            };
+
+            repositorioMock
+                .Setup(x => x.ObterTodosClienteProdutos())
+                .ReturnsAsync(categorias);
+
+            var mediadorHandler = new Mock<IMediatorHandler>();
+
+            var servico = new ClienteServicoApp(mapperMock.Object, mediadorHandler.Object, repositorioMock.Object);
+
+            var lista = await servico.ObterTodosClienteProdutosAsync();
+
+            Assert.True(lista.Any());
+        }
+
+        [Fact]
         public async Task ListarTodosTesteAsync()
         {
             var mapperMock = new Mock<IMapper>();

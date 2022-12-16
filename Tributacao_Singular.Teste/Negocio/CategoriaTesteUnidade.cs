@@ -13,6 +13,14 @@ namespace Tributacao_Singular.Teste.Negocio
     {
 
         [Fact]
+        public void DeveGerarCategoria()
+        {
+            Categoria categoria = new Categoria();
+
+            Assert.True(categoria.descricao.Equals(String.Empty));
+        }
+
+        [Fact]
         public void DeveGerarCategoriaSemErro() 
         {
             Categoria categoria = new Categoria("Descricao",10,10,10,new List<Produto>());

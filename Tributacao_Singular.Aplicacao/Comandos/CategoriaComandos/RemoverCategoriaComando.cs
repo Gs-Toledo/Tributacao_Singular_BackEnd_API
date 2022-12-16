@@ -31,7 +31,7 @@ namespace Tributacao_Singular.Aplicacao.Comandos.CategoriaComandos
 
             RuleFor(c => c.Id)
                 .NotEmpty()
-                .WithMessage("Nome não foi informado.");
+                .WithMessage("Id não foi informado.");
         }
     }
 }

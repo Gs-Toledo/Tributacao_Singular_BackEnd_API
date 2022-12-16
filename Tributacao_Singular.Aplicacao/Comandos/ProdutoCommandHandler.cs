@@ -36,6 +36,56 @@ namespace Tributacao_Singular.Aplicacao.Comandos
             this.mapper = mapper;
         }
 
+        public async Task<bool> Handle(AdicionarProdutoComando request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                if (!ValidarComando(request)) return false;
+
+                var ClienteExiste = await respositorioCliente.ObterClienteProdutosPorId(request.ClienteId);
+
+                if (ClienteExiste == null)
+                {
+                    await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("AdicionarProduto", "Não existe um Cliente informado."));
+                    return false;
+                }
+
+                var ProcuraCategoriaBase = await respositorioCategoria.Buscar(x => x.descricao == "CategoriaBase");
+                var categoriaBase = ProcuraCategoriaBase.ToList();
+
+                if (ProcuraCategoriaBase == null | categoriaBase.Count == 0)
+                {
+                    await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("AdicionarProduto", "Não existe uma categoria base informada, favor contactar serviço tecnico."));
+                    return false;
+                }
+
+                var produto = new Produto();
+                produto.Id = request.Id;
+                produto.descricao = request.descricao;
+                produto.EAN = request.EAN;
+                produto.NCM = request.NCM;
+                produto.Status = 0;
+                produto.ClienteId = ClienteExiste.Id;
+                produto.CategoriaId = categoriaBase.FirstOrDefault().Id;
+                produto.Cliente = null;
+                produto.Categoria = null;
+
+                await respositorioProduto.Adicionar(produto);
+
+                return true;
+            }
+            catch (DominioException ex)
+            {
+                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("AdicionarProduto", ex.Message));
+                return false;
+            }
+            catch (Exception ex)
+            {
+                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("AdicionarProduto", ex.Message));
+                return false;
+            }
+        }
+
         public async Task<bool> Handle(AtualizarProdutoComando request, CancellationToken cancellationToken)
         {
             try 
@@ -90,56 +140,6 @@ namespace Tributacao_Singular.Aplicacao.Comandos
             catch (Exception ex)
             {
                 await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Remover", ex.Message));
-                return false;
-            }
-        }
-
-        public async Task<bool> Handle(AdicionarProdutoComando request, CancellationToken cancellationToken)
-        {
-            try
-            {
-                if (!ValidarComando(request)) return false;
-
-                var ClienteExiste = await respositorioCliente.ObterClienteProdutosPorId(request.ClienteId);
-
-                if (ClienteExiste == null)
-                {
-                    await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("AdicionarProduto", "Não existe um Cliente informado."));
-                    return false;
-                }
-
-                var ProcuraCategoriaBase = await respositorioCategoria.Buscar(x => x.descricao == "CategoriaBase");
-                var categoriaBase = ProcuraCategoriaBase.ToList();
-
-                if (ProcuraCategoriaBase == null | categoriaBase.Count == 0 )
-                {
-                    await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("AdicionarProduto", "Não existe uma categoria base informada, favor contactar serviço tecnico."));
-                    return false;
-                }
-
-                var produto = new Produto();
-                produto.Id = request.Id;
-                produto.descricao = request.descricao;
-                produto.EAN = request.EAN;
-                produto.NCM = request.NCM;
-                produto.Status = 0;
-                produto.ClienteId = ClienteExiste.Id;
-                produto.CategoriaId = categoriaBase.FirstOrDefault().Id;
-                produto.Cliente = null;
-                produto.Categoria = null;
-
-                await respositorioProduto.Adicionar(produto);
-
-                return true;
-            }
-            catch (DominioException ex)
-            {
-                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("AdicionarProduto", ex.Message));
-                return false;
-            }
-            catch (Exception ex)
-            {
-                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("AdicionarProduto", ex.Message));
                 return false;
             }
         }

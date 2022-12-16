@@ -20,17 +20,17 @@ namespace Tributacao_Singular.Negocio.Modelos
 
         public Categoria()
         {
-            descricao = "";
-            Produtos = new List<Produto>();
+            this.descricao = String.Empty;
+            this.Produtos = new List<Produto>();
         }
 
         public Categoria(string descricao, decimal iCMS, decimal cofins, decimal iPI, List<Produto> produtos)
         {
             this.descricao = descricao;
-            ICMS = iCMS;
-            Cofins = cofins;
-            IPI = iPI;
-            Produtos = produtos;
+            this.ICMS = iCMS;
+            this.Cofins = cofins;
+            this.IPI = iPI;
+            this.Produtos = produtos;
         }
     }
 }

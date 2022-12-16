@@ -54,12 +54,12 @@ namespace Tributacao_Singular.Aplicacao.Comandos
             }
             catch (DominioException ex)
             {
-                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Adicionar", ex.Message));
+                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio(request.Tipo, ex.Message));
                 return false;
             }
             catch (Exception ex)
             {
-                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Adicionar", ex.Message));
+                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio(request.Tipo, ex.Message));
                 return false;
             }
         }
@@ -74,27 +74,29 @@ namespace Tributacao_Singular.Aplicacao.Comandos
 
                 if (CategoriaExiste == null)
                 {
-                    await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Atualizar", "Não Existe uma Categoria Informada."));
+                    await mediadorHandler.PublicarNotificacao(new NotificacaoDominio(request.Tipo, "Não Existe uma Categoria Informada."));
                     return false;
                 }
+                else
+                {
+                    CategoriaExiste.descricao = request.descricao;
+                    CategoriaExiste.Cofins = request.Cofins;
+                    CategoriaExiste.ICMS = request.ICMS;
+                    CategoriaExiste.IPI = request.IPI;
 
-                CategoriaExiste.descricao = request.descricao;
-                CategoriaExiste.Cofins = request.Cofins;
-                CategoriaExiste.ICMS = request.ICMS;
-                CategoriaExiste.IPI = request.IPI;
+                    await respositorioCategoria.Atualizar(CategoriaExiste);
 
-                await respositorioCategoria.Atualizar(CategoriaExiste);
-
-                return true;
+                    return true;
+                }             
             }
             catch (DominioException ex)
             {
-                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Atualizar", ex.Message));
+                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio(request.Tipo, ex.Message));
                 return false;
             }
             catch (Exception ex)
             {
-                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Atualizar", ex.Message));
+                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio(request.Tipo, ex.Message));
                 return false;
             }
         }
@@ -105,26 +107,37 @@ namespace Tributacao_Singular.Aplicacao.Comandos
             {
                 if (!ValidarComando(request)) return false;
 
-                var ProcuraCategoriaBase = await respositorioCategoria.Buscar(x => x.descricao == "CategoriaBase");
-                var categoriaBase = ProcuraCategoriaBase.ToList().FirstOrDefault();
+                IEnumerable<Categoria> ProcuraCategoriaBase = await respositorioCategoria.Buscar(x => x.descricao.Equals("CategoriaBase"));
+                Categoria? categoriaBase = ProcuraCategoriaBase.FirstOrDefault();
 
-                foreach (var item in await respositorioProduto.ObterProdutosPorCategoriaId(request.Id))
+                if(categoriaBase != null)
                 {
-                    await respositorioProduto.AtualizaProdutoCategoriaBase(categoriaBase.Id, item.Id);
+                    IEnumerable<Produto> produtosPorCategoria = await respositorioProduto.ObterProdutosPorCategoriaId(request.Id);
+
+                    foreach (var item in produtosPorCategoria)
+                    {
+                        await respositorioProduto.AtualizaProdutoCategoriaBase(categoriaBase.Id, item.Id);
+                    }
+
+                    await respositorioCategoria.Remover(request.Id);
+
+                    return true;
                 }
+                else
+                {
+                    await respositorioCategoria.Remover(request.Id);
 
-                await respositorioCategoria.Remover(request.Id);
-
-                return true;
+                    return true;
+                }
             }
             catch (DominioException ex)
             {
-                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Remover", ex.Message));
+                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio(request.Tipo, ex.Message));
                 return false;
             }
             catch (Exception ex)
             {
-                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Remover", ex.Message));
+                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio(request.Tipo, ex.Message));
                 return false;
             }
         }
