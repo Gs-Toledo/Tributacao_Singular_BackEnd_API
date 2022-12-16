@@ -110,7 +110,7 @@ namespace Tributacao_Singular.Teste.Aplicacao
             var mapperMock = new Mock<IMapper>();
 
             mapperMock
-                .Setup(x => x.Map<List<ClienteViewModel>>(It.IsAny<List<Cliente>>()))
+                .Setup(x => x.Map<IEnumerable<ClienteViewModel>>(It.IsAny<List<Cliente>>()))
                 .Returns(new List<ClienteViewModel>
                 {
                     new ClienteViewModel()

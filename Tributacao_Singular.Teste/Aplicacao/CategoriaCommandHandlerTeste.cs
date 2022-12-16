@@ -42,7 +42,7 @@ namespace Tributacao_Singular.Teste.Aplicacao
         [Fact]
         public void DeveGerarAdicionarCategoriaErroDescricaoComando()
         {
-            AdicionarCategoriaComando adicionarCategoriaComando = new AdicionarCategoriaComando(Guid.NewGuid(), "Descricao", 10, 10, 10);
+            AdicionarCategoriaComando adicionarCategoriaComando = new AdicionarCategoriaComando(Guid.NewGuid(), It.IsAny<String>(), 10, 10, 10);
 
             Assert.False(adicionarCategoriaComando.EhValido());
         }
