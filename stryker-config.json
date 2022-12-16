@@ -1,6 +1,5 @@
 ﻿{
   "stryker-config": {
-	"project": "Tributacao_Singular.Aplicacao.csproj",
     "reporters": [
       "progress",
       "html"
@@ -24,9 +23,6 @@
       "!**/MigDbContextUm.cs",
       "!**/MigUm.cs",
       "!**/CpfValidacao.cs",
-      "!**/CategoriasValidation.cs",
-      "!**/ClienteValidation.cs",
-      "!**/ProdutoValidation.cs",
       "!**/Program.cs",
       "!**/AspNetUser.cs",
       "!**/ConfiguracaoApp.cs",
@@ -38,6 +34,7 @@
       "!**/DependencyInjectionConfig.cs",
       "!**/IdentityConfig.cs",
 	  
+	  "!**/Repository.cs",
 	  "!**/20221204224151_MigUm.cs",
 	  "!**/20221204224151_MigUm.Designer.cs",
 	  "!**/ApplicationDbContextModelSnapshot.cs",

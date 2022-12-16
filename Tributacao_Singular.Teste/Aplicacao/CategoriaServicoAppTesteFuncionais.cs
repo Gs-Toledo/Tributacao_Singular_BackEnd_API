@@ -43,7 +43,7 @@ namespace Tributacao_Singular.Teste.Aplicacao
 
             var categorias = new List<Categoria>()
             {
-                new Categoria()
+                new Categoria("descricao",10,10,10,new List<Produto>())
             };
 
             repositorioMock

@@ -44,30 +44,32 @@ namespace Tributacao_Singular.Aplicacao.Comandos
 
                 if (ClienteExiste != null) 
                 {
-                    await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Adicionar", "Já existe um Cliente com o cnpj informado."));
+                    await mediadorHandler.PublicarNotificacao(new NotificacaoDominio(request.Tipo, "Já existe um Cliente com o cnpj informado."));
                     return false;
                 }
+                else 
+                {
+                    var clienteViewModel = new ClienteViewModel();
+                    clienteViewModel.cnpj = request.cnpj;
+                    clienteViewModel.Id = request.Id;
+                    clienteViewModel.nome = request.nome;
+                    clienteViewModel.Produtos = request.Produtos;
 
-                var clienteViewModel = new ClienteViewModel();
-                clienteViewModel.cnpj = request.cnpj;
-                clienteViewModel.Id = request.Id;
-                clienteViewModel.nome = request.nome;
-                clienteViewModel.Produtos = request.Produtos;
+                    var cliente = mapper.Map<Cliente>(clienteViewModel);
 
-                var cliente = mapper.Map<Cliente>(clienteViewModel);
+                    await respositorioCliente.Adicionar(cliente);
 
-                await respositorioCliente.Adicionar(cliente);
-
-                return true;
+                    return true;
+                }
             }
             catch (DominioException ex)
             {
-                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Adicionar", ex.Message));
+                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio(request.Tipo, ex.Message));
                 return false;
             }
             catch (Exception ex)
             {
-                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Adicionar", ex.Message));
+                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio(request.Tipo, ex.Message));
                 return false;
             }
         }
@@ -80,33 +82,36 @@ namespace Tributacao_Singular.Aplicacao.Comandos
 
                 var ClienteExiste = await respositorioCliente.ObterClienteProdutosPorId(request.Id);
 
+                var ClienteComCnpjInformado = await respositorioCliente.ObterPorCnpj(request.cnpj);
+
                 if (ClienteExiste == null)
                 {
-                    await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Atualizar", "Não Existe um Cliente Informado."));
+                    await mediadorHandler.PublicarNotificacao(new NotificacaoDominio(request.Tipo, "Não Existe um Cliente Informado."));
                     return false;
                 }
-
-                if (respositorioCliente.Buscar(p => p.cnpj == request.cnpj && p.Id != request.Id).Result.Any())
+                else if (ClienteComCnpjInformado != null)
                 {
-                    await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Atualizar", "Existe um Cliente com cpnj Informado."));
+                    await mediadorHandler.PublicarNotificacao(new NotificacaoDominio(request.Tipo, "Existe um Cliente com CPNJ Informado."));
                     return false;
                 }
+                else 
+                {
+                    ClienteExiste.nome = request.nome;
+                    ClienteExiste.cnpj = request.cnpj;
 
-                ClienteExiste.nome = request.nome;
-                ClienteExiste.cnpj = request.cnpj;
+                    await respositorioCliente.Atualizar(ClienteExiste);
 
-                await respositorioCliente.Atualizar(ClienteExiste);
-
-                return true;
+                    return true;
+                }
             }
             catch (DominioException ex)
             {
-                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Atualizar", ex.Message));
+                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio(request.Tipo, ex.Message));
                 return false;
             }
             catch (Exception ex)
             {
-                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Atualizar", ex.Message));
+                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio(request.Tipo, ex.Message));
                 return false;
             }
         }
@@ -117,23 +122,34 @@ namespace Tributacao_Singular.Aplicacao.Comandos
             {
                 if (!ValidarComando(request)) return false;
 
-                foreach (var item in await respositorioProduto.ObterProdutosPorClienteId(request.Id)) 
+                var listaProdutos = await respositorioProduto.ObterProdutosPorClienteId(request.Id);
+
+                if(listaProdutos != null) 
                 {
-                   await respositorioProduto.Remover(item.Id);
+                    foreach (var item in listaProdutos)
+                    {
+                        await respositorioProduto.Remover(item.Id);
+                    }
+
+                    await respositorioCliente.Remover(request.Id);
+
+                    return true;
                 }
+                else 
+                {
+                    await respositorioCliente.Remover(request.Id);
 
-                await respositorioCliente.Remover(request.Id);
-
-                return true;
+                    return true;
+                }
             }
             catch (DominioException ex)
             {
-                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Remover", ex.Message));
+                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio(request.Tipo, ex.Message));
                 return false;
             }
             catch (Exception ex)
             {
-                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Remover", ex.Message));
+                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio(request.Tipo, ex.Message));
                 return false;
             }
         }

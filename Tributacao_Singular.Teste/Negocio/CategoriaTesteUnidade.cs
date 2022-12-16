@@ -11,6 +11,12 @@ namespace Tributacao_Singular.Teste.Negocio
 {
     public class CategoriaTesteUnidade : IClassFixture<Inicializar>
     {
+        private readonly ServiceProvider provedorServico;
+
+        public CategoriaTesteUnidade(Inicializar inicializar)
+        {
+            provedorServico = inicializar.ProvedorServico;
+        }
 
         [Fact]
         public void DeveGerarCategoria()
@@ -28,6 +34,16 @@ namespace Tributacao_Singular.Teste.Negocio
             var validator = new CategoriasValidation();
 
             Assert.True(validator.Validate(categoria).IsValid);
+        }
+
+        [Fact]
+        public void DeveGerarCategoriaComErro()
+        {
+            Categoria categoria = new Categoria();
+
+            var validator = new CategoriasValidation();
+
+            Assert.False(validator.Validate(categoria).IsValid);
         }
 
         [Fact]

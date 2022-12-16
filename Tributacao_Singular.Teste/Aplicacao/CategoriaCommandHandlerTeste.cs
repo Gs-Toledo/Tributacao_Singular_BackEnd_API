@@ -161,7 +161,7 @@ namespace Tributacao_Singular.Teste.Aplicacao
 
             mapperMock
                 .Setup(x => x.Map<Categoria>(It.IsAny<CategoriaViewModel>()))
-                .Returns(new Categoria());
+                .Returns(new Categoria("descricao",10,10,10,new List<Produto>()));
 
             var mediatorMock = new Mock<IMediatorHandler>();
 
@@ -185,7 +185,7 @@ namespace Tributacao_Singular.Teste.Aplicacao
 
             mapperMock
                 .Setup(x => x.Map<Categoria>(It.IsAny<CategoriaViewModel>()))
-                .Returns(new Categoria());
+                .Returns(new Categoria("descricao",10,10,10,new List<Produto>()));
 
             var mediatorMock = new Mock<IMediatorHandler>();
 
@@ -214,7 +214,7 @@ namespace Tributacao_Singular.Teste.Aplicacao
 
             mapperMock
                 .Setup(x => x.Map<Categoria>(It.IsAny<CategoriaViewModel>()))
-                .Returns(new Categoria());
+                .Returns(new Categoria("descricao",10,10,10,new List<Produto>()));
 
             var mediatorMock = new Mock<IMediatorHandler>();
 
@@ -255,7 +255,7 @@ namespace Tributacao_Singular.Teste.Aplicacao
 
             categoriaRepositorioMock
                 .Setup(x => x.ObterPorId(It.IsAny<Guid>()))
-                .ReturnsAsync(new Categoria());
+                .ReturnsAsync(new Categoria("descricao",10,10,10,new List<Produto>()));
 
             var produtoRepositorioMock = new Mock<IProdutoRepositorio>();
 
@@ -283,7 +283,7 @@ namespace Tributacao_Singular.Teste.Aplicacao
 
             categoriaRepositorioMock
                 .Setup(x => x.ObterPorId(It.IsAny<Guid>()))
-                .ReturnsAsync(new Categoria());
+                .ReturnsAsync(new Categoria("descricao",10,10,10,new List<Produto>()));
 
             var produtoRepositorioMock = new Mock<IProdutoRepositorio>();
 
@@ -329,7 +329,7 @@ namespace Tributacao_Singular.Teste.Aplicacao
 
             mapperMock
                 .Setup(x => x.Map<Categoria>(It.IsAny<CategoriaViewModel>()))
-                .Returns(new Categoria());
+                .Returns(new Categoria("descricao",10,10,10,new List<Produto>()));
 
             var mediatorMock = new Mock<IMediatorHandler>();
 
@@ -337,7 +337,7 @@ namespace Tributacao_Singular.Teste.Aplicacao
 
             categoriaRepositorioMock
                 .Setup(x => x.ObterPorId(It.IsAny<Guid>()))
-                .ReturnsAsync(new Categoria());
+                .ReturnsAsync(new Categoria("descricao",10,10,10,new List<Produto>()));
 
             categoriaRepositorioMock
                 .Setup(x => x.Atualizar(It.IsAny<Categoria>()))
@@ -362,7 +362,7 @@ namespace Tributacao_Singular.Teste.Aplicacao
 
             mapperMock
                 .Setup(x => x.Map<Categoria>(It.IsAny<CategoriaViewModel>()))
-                .Returns(new Categoria());
+                .Returns(new Categoria("descricao",10,10,10,new List<Produto>()));
 
             var mediatorMock = new Mock<IMediatorHandler>();
 
@@ -370,7 +370,7 @@ namespace Tributacao_Singular.Teste.Aplicacao
 
             categoriaRepositorioMock
                 .Setup(x => x.ObterPorId(It.IsAny<Guid>()))
-                .ReturnsAsync(new Categoria());
+                .ReturnsAsync(new Categoria("descricao",10,10,10,new List<Produto>()));
 
             categoriaRepositorioMock
                 .Setup(x => x.Atualizar(It.IsAny<Categoria>()))
@@ -407,7 +407,7 @@ namespace Tributacao_Singular.Teste.Aplicacao
 
             categoriaRepositorioMock
                 .Setup(x => x.Buscar(It.IsAny<Expression<Func<Categoria, bool>>>()))
-                .ReturnsAsync(new List<Categoria>() { new Categoria() });
+                .ReturnsAsync(new List<Categoria>() { new Categoria("descricao",10,10,10,new List<Produto>()) });
 
             categoriaRepositorioMock
                 .Setup(x => x.Remover(It.IsAny<Guid>()))
@@ -503,7 +503,7 @@ namespace Tributacao_Singular.Teste.Aplicacao
 
             categoriaRepositorioMock
                 .Setup(x => x.Buscar(It.IsAny<Expression<Func<Categoria, bool>>>()))
-                .ReturnsAsync(new List<Categoria>() { new Categoria() });
+                .ReturnsAsync(new List<Categoria>() { new Categoria("descricao",10,10,10,new List<Produto>()) });
 
             categoriaRepositorioMock
                 .Setup(x => x.Remover(It.IsAny<Guid>()))
@@ -540,7 +540,7 @@ namespace Tributacao_Singular.Teste.Aplicacao
 
             categoriaRepositorioMock
                 .Setup(x => x.Buscar(It.IsAny<Expression<Func<Categoria, bool>>>()))
-                .ReturnsAsync(new List<Categoria>() { new Categoria() });
+                .ReturnsAsync(new List<Categoria>() { new Categoria("descricao",10,10,10,new List<Produto>()) });
 
             categoriaRepositorioMock
                 .Setup(x => x.Remover(It.IsAny<Guid>()))
