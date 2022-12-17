@@ -364,12 +364,12 @@ namespace Tributacao_Singular.Teste.Aplicacao
             var clienteRepositorioMock = new Mock<IClienteRepositorio>();
 
             clienteRepositorioMock
-               .Setup(x => x.ObterPorCnpj(It.IsAny<String>()))
-               .ReturnsAsync(new Cliente());
-
-            clienteRepositorioMock
                 .Setup(x => x.ObterClienteProdutosPorId(It.IsAny<Guid>()))
                 .ReturnsAsync(new Cliente());
+
+            clienteRepositorioMock
+                .Setup(x => x.Buscar(It.IsAny<Expression<Func<Cliente, bool>>>()))
+                .ReturnsAsync(new List<Cliente>() { new Cliente() });
 
             var produtoRepositorioMock = new Mock<IProdutoRepositorio>();
 

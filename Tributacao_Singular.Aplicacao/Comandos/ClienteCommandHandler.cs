@@ -82,14 +82,14 @@ namespace Tributacao_Singular.Aplicacao.Comandos
 
                 var ClienteExiste = await respositorioCliente.ObterClienteProdutosPorId(request.Id);
 
-                var ClienteComCnpjInformado = await respositorioCliente.ObterPorCnpj(request.cnpj);
+                var ClienteComCnpjInformado = await respositorioCliente.Buscar(x => x.cnpj.Equals(request.cnpj) && !x.Id.Equals(request.Id));
 
                 if (ClienteExiste == null)
                 {
                     await mediadorHandler.PublicarNotificacao(new NotificacaoDominio(request.Tipo, "Não Existe um Cliente Informado."));
                     return false;
                 }
-                else if (ClienteComCnpjInformado != null)
+                else if (ClienteComCnpjInformado.Any())
                 {
                     await mediadorHandler.PublicarNotificacao(new NotificacaoDominio(request.Tipo, "Existe um Cliente com CPNJ Informado."));
                     return false;
