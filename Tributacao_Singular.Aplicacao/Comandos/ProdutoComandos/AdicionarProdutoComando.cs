@@ -50,7 +50,7 @@ namespace Tributacao_Singular.Aplicacao.Comandos.ProdutoComandos
 
             RuleFor(c => c.EAN)
                 .NotEmpty()
-                .WithMessage("CNPJ não foi informado.");
+                .WithMessage("EAN não foi informado.");
 
             RuleFor(c => c.NCM)
                 .NotEmpty()

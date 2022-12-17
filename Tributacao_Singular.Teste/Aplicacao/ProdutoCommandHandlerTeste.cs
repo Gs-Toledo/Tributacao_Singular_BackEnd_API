@@ -113,6 +113,7 @@ namespace Tributacao_Singular.Teste.Aplicacao
         #endregion
 
         #region AdicionarHandler
+
         [Fact]
         public async Task DeveLidarComAdicionarAsync()
         {
@@ -128,15 +129,15 @@ namespace Tributacao_Singular.Teste.Aplicacao
 
             var clienteRepositorioMock = new Mock<IClienteRepositorio>();
 
-            var categoriaRepositorioMock = new Mock<ICategoriaRepositorio>();
-
             clienteRepositorioMock
                 .Setup(x => x.ObterClienteProdutosPorId(It.IsAny<Guid>()))
                 .ReturnsAsync(new Cliente());
 
-            //categoriaRepositorioMock
-            //    .Setup(x => x.Buscar(It.IsAny<Expression<Func<Categoria, bool>>>()))
-            //    .ReturnsAsync(new Cliente());
+            var categoriaRepositorioMock = new Mock<ICategoriaRepositorio>();
+
+            categoriaRepositorioMock
+                .Setup(x => x.Buscar(It.IsAny<Expression<Func<Categoria, bool>>>()))
+                .ReturnsAsync(new List<Categoria> { new Categoria() { } });
 
             var command = new AdicionarProdutoComando(Guid.NewGuid(), "Descricao do produto", "10", "10", 1, Guid.NewGuid());
 
@@ -169,6 +170,73 @@ namespace Tributacao_Singular.Teste.Aplicacao
 
             var result = await handler.Handle(command, default);
 
+            mediatorMock.Verify(x => x.PublicarNotificacao(It.IsAny<NotificacaoDominio>()));
+            Assert.False(result);
+        }
+
+        [Fact]
+        public async Task DeveLidarComAdicionarClienteNaoExistenteAsync()
+        {
+            var mapperMock = new Mock<IMapper>();
+
+            mapperMock
+                .Setup(x => x.Map<ProdutoViewModel>(It.IsAny<Produto>()))
+                .Returns(new ProdutoViewModel());
+
+            var mediatorMock = new Mock<IMediatorHandler>();
+
+            var produtoRepositorioMock = new Mock<IProdutoRepositorio>();
+
+            var clienteRepositorioMock = new Mock<IClienteRepositorio>();
+
+            var categoriaRepositorioMock = new Mock<ICategoriaRepositorio>();
+
+            categoriaRepositorioMock
+                .Setup(x => x.Buscar(It.IsAny<Expression<Func<Categoria, bool>>>()))
+                .ReturnsAsync(new List<Categoria> { new Categoria() { } });
+
+            var command = new AdicionarProdutoComando(Guid.NewGuid(), "Descricao do produto", "10", "10", 1, Guid.NewGuid());
+
+            var handler = new ProdutoCommandHandler(mediatorMock.Object, produtoRepositorioMock.Object, clienteRepositorioMock.Object, mapperMock.Object, categoriaRepositorioMock.Object);
+
+            var result = await handler.Handle(command, default);
+
+            mediatorMock.Verify(x => x.PublicarNotificacao(It.IsAny<NotificacaoDominio>()));
+            Assert.False(result);
+        }
+
+        [Fact]
+        public async Task DeveLidarComAdicionarCategoriaBaseNaoExistenteAsync()
+        {
+            var mapperMock = new Mock<IMapper>();
+
+            mapperMock
+                .Setup(x => x.Map<ProdutoViewModel>(It.IsAny<Produto>()))
+                .Returns(new ProdutoViewModel());
+
+            var mediatorMock = new Mock<IMediatorHandler>();
+
+            var produtoRepositorioMock = new Mock<IProdutoRepositorio>();
+
+            var clienteRepositorioMock = new Mock<IClienteRepositorio>();
+
+            clienteRepositorioMock
+                .Setup(x => x.ObterClienteProdutosPorId(It.IsAny<Guid>()))
+                .ReturnsAsync(new Cliente());
+
+            var categoriaRepositorioMock = new Mock<ICategoriaRepositorio>();
+
+            categoriaRepositorioMock
+                .Setup(x => x.Buscar(It.IsAny<Expression<Func<Categoria, bool>>>()))
+                .ReturnsAsync(null as List<Categoria>);
+
+            var command = new AdicionarProdutoComando(Guid.NewGuid(), "Descricao do produto", "10", "10", 1, Guid.NewGuid());
+
+            var handler = new ProdutoCommandHandler(mediatorMock.Object, produtoRepositorioMock.Object, clienteRepositorioMock.Object, mapperMock.Object, categoriaRepositorioMock.Object);
+
+            var result = await handler.Handle(command, default);
+
+            mediatorMock.Verify(x => x.PublicarNotificacao(It.IsAny<NotificacaoDominio>()));
             Assert.False(result);
         }
 
@@ -178,18 +246,28 @@ namespace Tributacao_Singular.Teste.Aplicacao
             var mapperMock = new Mock<IMapper>();
 
             mapperMock
-                .Setup(x => x.Map<Produto>(It.IsAny<ProdutoViewModel>()))
-                .Returns(new Produto("Descricao do produto", "10", "10", new Categoria(), new Cliente(), 1));
+                .Setup(x => x.Map<ProdutoViewModel>(It.IsAny<Produto>()))
+                .Returns(new ProdutoViewModel());
 
             var mediatorMock = new Mock<IMediatorHandler>();
 
             var produtoRepositorioMock = new Mock<IProdutoRepositorio>();
-            var clienteRepositorioMock = new Mock<IClienteRepositorio>();
-            var categoriaRepositorioMock = new Mock<ICategoriaRepositorio>();
 
             produtoRepositorioMock
                 .Setup(x => x.Adicionar(It.IsAny<Produto>()))
-                .Throws(new DominioException());
+                .ThrowsAsync(new DominioException());
+
+            var clienteRepositorioMock = new Mock<IClienteRepositorio>();
+
+            clienteRepositorioMock
+                .Setup(x => x.ObterClienteProdutosPorId(It.IsAny<Guid>()))
+                .ReturnsAsync(new Cliente());
+
+            var categoriaRepositorioMock = new Mock<ICategoriaRepositorio>();
+
+            categoriaRepositorioMock
+                .Setup(x => x.Buscar(It.IsAny<Expression<Func<Categoria, bool>>>()))
+                .ReturnsAsync(new List<Categoria> { new Categoria() { } });
 
             var command = new AdicionarProdutoComando(Guid.NewGuid(), "Descricao do produto", "10", "10", 1, Guid.NewGuid());
 
@@ -208,18 +286,28 @@ namespace Tributacao_Singular.Teste.Aplicacao
             var mapperMock = new Mock<IMapper>();
 
             mapperMock
-                .Setup(x => x.Map<Produto>(It.IsAny<ProdutoViewModel>()))
-                .Returns(new Produto("Descricao do produto", "10", "10", new Categoria(), new Cliente(), 1));
+                .Setup(x => x.Map<ProdutoViewModel>(It.IsAny<Produto>()))
+                .Returns(new ProdutoViewModel());
 
             var mediatorMock = new Mock<IMediatorHandler>();
 
             var produtoRepositorioMock = new Mock<IProdutoRepositorio>();
-            var clienteRepositorioMock = new Mock<IClienteRepositorio>();
-            var categoriaRepositorioMock = new Mock<ICategoriaRepositorio>();
 
             produtoRepositorioMock
                 .Setup(x => x.Adicionar(It.IsAny<Produto>()))
-                .Throws(new Exception());
+                .ThrowsAsync(new Exception());
+
+            var clienteRepositorioMock = new Mock<IClienteRepositorio>();
+
+            clienteRepositorioMock
+                .Setup(x => x.ObterClienteProdutosPorId(It.IsAny<Guid>()))
+                .ReturnsAsync(new Cliente());
+
+            var categoriaRepositorioMock = new Mock<ICategoriaRepositorio>();
+
+            categoriaRepositorioMock
+                .Setup(x => x.Buscar(It.IsAny<Expression<Func<Categoria, bool>>>()))
+                .ReturnsAsync(new List<Categoria> { new Categoria() { } });
 
             var command = new AdicionarProdutoComando(Guid.NewGuid(), "Descricao do produto", "10", "10", 1, Guid.NewGuid());
 
@@ -246,13 +334,13 @@ namespace Tributacao_Singular.Teste.Aplicacao
             var mediatorMock = new Mock<IMediatorHandler>();
 
             var produtoRepositorioMock = new Mock<IProdutoRepositorio>();
-            var clienteRepositorioMock = new Mock<IClienteRepositorio>();
-            var categoriaRepositorioMock = new Mock<ICategoriaRepositorio>();
 
             produtoRepositorioMock
                 .Setup(x => x.ObterPorId(It.IsAny<Guid>()))
                 .ReturnsAsync(new Produto("Descricao do produto", "10", "10", new Categoria(), new Cliente(), 1));
 
+            var clienteRepositorioMock = new Mock<IClienteRepositorio>();
+            var categoriaRepositorioMock = new Mock<ICategoriaRepositorio>();
 
             var command = new AtualizarProdutoComando(Guid.NewGuid(), "Descrição do produto", "10", "10", 1, Guid.NewGuid());
 
@@ -275,12 +363,13 @@ namespace Tributacao_Singular.Teste.Aplicacao
             var mediatorMock = new Mock<IMediatorHandler>();
 
             var produtoRepositorioMock = new Mock<IProdutoRepositorio>();
-            var clienteRepositorioMock = new Mock<IClienteRepositorio>();
-            var categoriaRepositorioMock = new Mock<ICategoriaRepositorio>();
 
             produtoRepositorioMock
                 .Setup(x => x.ObterPorId(It.IsAny<Guid>()))
                 .ReturnsAsync(new Produto("Descricao do produto", "10", "10", new Categoria(), new Cliente(), 1));
+
+            var clienteRepositorioMock = new Mock<IClienteRepositorio>();
+            var categoriaRepositorioMock = new Mock<ICategoriaRepositorio>();
 
             var command = new AtualizarProdutoComando(Guid.NewGuid(), It.IsAny<String>(), "10", "10", 1, Guid.NewGuid());
 
@@ -330,7 +419,9 @@ namespace Tributacao_Singular.Teste.Aplicacao
             var mediatorMock = new Mock<IMediatorHandler>();
 
             var clienteRepositorioMock = new Mock<IClienteRepositorio>();
+
             var categoriaRepositorioMock = new Mock<ICategoriaRepositorio>();
+
             var produtoRepositorioMock = new Mock<IProdutoRepositorio>();
 
             produtoRepositorioMock
@@ -406,10 +497,6 @@ namespace Tributacao_Singular.Teste.Aplicacao
             var categoriaRepositorioMock = new Mock<ICategoriaRepositorio>();
 
             produtoRepositorioMock
-                .Setup(x => x.Buscar(It.IsAny<Expression<Func<Produto, bool>>>()))
-                .ReturnsAsync(new List<Produto>(){ new Produto("Descricao do produto", "10", "10", new Categoria(), new Cliente(), 1) });
-
-            produtoRepositorioMock
                 .Setup(x => x.Remover(It.IsAny<Guid>()))
                 .Returns(Task.CompletedTask);
 
@@ -420,6 +507,34 @@ namespace Tributacao_Singular.Teste.Aplicacao
             var result = await handler.Handle(command, default);
 
             Assert.True(result);
+        }
+
+        [Fact]
+        public async Task DeveLidarComRemoverInvalidoAsync()
+        {
+            var mapperMock = new Mock<IMapper>();
+
+            mapperMock
+                .Setup(x => x.Map<ProdutoViewModel>(It.IsAny<Produto>()))
+                .Returns(new ProdutoViewModel());
+
+            var mediatorMock = new Mock<IMediatorHandler>();
+
+            var produtoRepositorioMock = new Mock<IProdutoRepositorio>();
+            var clienteRepositorioMock = new Mock<IClienteRepositorio>();
+            var categoriaRepositorioMock = new Mock<ICategoriaRepositorio>();
+
+            produtoRepositorioMock
+                .Setup(x => x.Remover(It.IsAny<Guid>()))
+                .Returns(Task.CompletedTask);
+
+            var command = new RemoverProdutoComando(It.IsAny<Guid>());
+
+            var handler = new ProdutoCommandHandler(mediatorMock.Object, produtoRepositorioMock.Object, clienteRepositorioMock.Object, mapperMock.Object, categoriaRepositorioMock.Object);
+
+            var result = await handler.Handle(command, default);
+
+            Assert.False(result);
         }
 
         [Fact]

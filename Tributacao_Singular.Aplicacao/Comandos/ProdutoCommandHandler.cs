@@ -44,44 +44,46 @@ namespace Tributacao_Singular.Aplicacao.Comandos
 
                 var ClienteExiste = await respositorioCliente.ObterClienteProdutosPorId(request.ClienteId);
 
+                var ProcuraCategoriaBase = await respositorioCategoria.Buscar(x => x.descricao.Equals("CategoriaBase"));
+
                 if (ClienteExiste == null)
                 {
-                    await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("AdicionarProduto", "Não existe um Cliente informado."));
+                    await mediadorHandler.PublicarNotificacao(new NotificacaoDominio(request.Tipo, "Não existe um Cliente informado."));
                     return false;
                 }
-
-                var ProcuraCategoriaBase = await respositorioCategoria.Buscar(x => x.descricao == "CategoriaBase");
-                var categoriaBase = ProcuraCategoriaBase.ToList();
-
-                if (ProcuraCategoriaBase == null || categoriaBase.Count == 0)
+                else if (ProcuraCategoriaBase == null)
                 {
-                    await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("AdicionarProduto", "Não existe uma categoria base informada, favor contactar serviço tecnico."));
+                    await mediadorHandler.PublicarNotificacao(new NotificacaoDominio(request.Tipo, "Não existe uma categoria base informada, favor contactar serviço tecnico."));
                     return false;
                 }
+                else 
+                {
+                    var categoriaBase = ProcuraCategoriaBase.First();
 
-                var produto = new Produto();
-                produto.Id = request.Id;
-                produto.descricao = request.descricao;
-                produto.EAN = request.EAN;
-                produto.NCM = request.NCM;
-                produto.Status = 0;
-                produto.ClienteId = ClienteExiste.Id;
-                produto.CategoriaId = categoriaBase.FirstOrDefault().Id;
-                produto.Cliente = null;
-                produto.Categoria = null;
+                    var produto = new Produto();
+                    produto.Id = request.Id;
+                    produto.descricao = request.descricao;
+                    produto.EAN = request.EAN;
+                    produto.NCM = request.NCM;
+                    produto.Status = 0;
+                    produto.ClienteId = ClienteExiste.Id;
+                    produto.CategoriaId = categoriaBase.Id;
+                    produto.Cliente = null;
+                    produto.Categoria = null;
 
-                await respositorioProduto.Adicionar(produto);
+                    await respositorioProduto.Adicionar(produto);
 
-                return true;
+                    return true;
+                }
             }
             catch (DominioException ex)
             {
-                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("AdicionarProduto", ex.Message));
+                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio(request.Tipo, ex.Message));
                 return false;
             }
             catch (Exception ex)
             {
-                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("AdicionarProduto", ex.Message));
+                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio(request.Tipo, ex.Message));
                 return false;
             }
         }
@@ -96,28 +98,30 @@ namespace Tributacao_Singular.Aplicacao.Comandos
 
                 if (ProdutoExiste == null) 
                 {
-                    await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Atualizar", "Não Existe um Produto Informado."));
+                    await mediadorHandler.PublicarNotificacao(new NotificacaoDominio(request.Tipo, "Não Existe um Produto Informado."));
                     return false;
                 }
+                else 
+                {
+                    ProdutoExiste.descricao = request.descricao;
+                    ProdutoExiste.EAN = request.EAN;
+                    ProdutoExiste.NCM = request.NCM;
+                    ProdutoExiste.Status = request.Status;
+                    ProdutoExiste.CategoriaId = request.CategoriaId;
 
-                ProdutoExiste.descricao = request.descricao;
-                ProdutoExiste.EAN = request.EAN;
-                ProdutoExiste.NCM = request.NCM;
-                ProdutoExiste.Status = request.Status;
-                ProdutoExiste.CategoriaId = request.CategoriaId;
+                    await respositorioProduto.Atualizar(ProdutoExiste);
 
-                await respositorioProduto.Atualizar(ProdutoExiste);
-
-                return true;
+                    return true;
+                }
             }
             catch (DominioException ex)
             {
-                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Atualizar", ex.Message));
+                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio(request.Tipo, ex.Message));
                 return false;
             }
             catch (Exception ex)
             {
-                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Atualizar", ex.Message));
+                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio(request.Tipo, ex.Message));
                 return false;
             }
         }
@@ -134,12 +138,12 @@ namespace Tributacao_Singular.Aplicacao.Comandos
             }
             catch (DominioException ex)
             {
-                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Remover", ex.Message));
+                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio(request.Tipo, ex.Message));
                 return false;
             }
             catch (Exception ex)
             {
-                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Remover", ex.Message));
+                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio(request.Tipo, ex.Message));
                 return false;
             }
         }
