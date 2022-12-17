@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,91 +20,43 @@ namespace Tributacao_Singular.Teste.Negocio
         }
 
         [Fact]
-        public void DeveGerarCategoria()
-        {
-            Categoria categoria = new Categoria();
-
-            Assert.True(categoria.descricao.Equals(String.Empty));
-        }
-
-        [Fact]
         public void DeveGerarCategoriaSemErro() 
         {
             Categoria categoria = new Categoria("Descricao",10,10,10,new List<Produto>());
 
-            var validator = new CategoriasValidation();
-
-            Assert.True(validator.Validate(categoria).IsValid);
-        }
-
-        [Fact]
-        public void DeveGerarCategoriaComErro()
-        {
-            Categoria categoria = new Categoria();
-
-            var validator = new CategoriasValidation();
-
-            Assert.False(validator.Validate(categoria).IsValid);
+            Assert.True(categoria.EhValido());
         }
 
         [Fact]
         public void DeveGerarCategoriaComErroDescricao()
         {
-            Categoria categoria = new Categoria("A", 10, 10, 10, new List<Produto>());
+            Categoria categoria = new Categoria(It.IsAny<String>(), 10, 10, 10, new List<Produto>());
 
-            var validator = new CategoriasValidation();
-
-            var result = validator.Validate(categoria);
-
-            Assert.Contains(result.Errors, o => o.PropertyName == "descricao");
+            Assert.False(categoria.EhValido());
         }
 
         [Fact]
         public void DeveGerarCategoriaComErroICMS()
         {
-            Categoria categoria = new Categoria();
-            categoria.descricao = "descricao";
-            categoria.Produtos = new List<Produto>();
-            categoria.Cofins = 10;
-            categoria.IPI = 10;
+            Categoria categoria = new Categoria("Descricao", It.IsAny<decimal>(), 10, 10, new List<Produto>());
 
-            var validator = new CategoriasValidation();
-
-            var result = validator.Validate(categoria);
-
-            Assert.Contains(result.Errors, o => o.PropertyName == "ICMS");
+            Assert.False(categoria.EhValido());
         }
 
         [Fact]
         public void DeveGerarCategoriaComErroIPI()
         {
-            Categoria categoria = new Categoria();
-            categoria.descricao = "descricao";
-            categoria.Produtos = new List<Produto>();
-            categoria.Cofins = 10;
-            categoria.ICMS = 10;
+            Categoria categoria = new Categoria("Descricao", 10, 10, It.IsAny<decimal>(), new List<Produto>());
 
-            var validator = new CategoriasValidation();
-
-            var result = validator.Validate(categoria);
-
-            Assert.Contains(result.Errors, o => o.PropertyName == "IPI");
+            Assert.False(categoria.EhValido());
         }
 
         [Fact]
         public void DeveGerarCategoriaComErroCofins()
         {
-            Categoria categoria = new Categoria();
-            categoria.descricao = "descricao";
-            categoria.Produtos = new List<Produto>();
-            categoria.IPI = 10;
-            categoria.ICMS = 10;
+            Categoria categoria = new Categoria("Descricao", 10, It.IsAny<decimal>(), 10, new List<Produto>());
 
-            var validator = new CategoriasValidation();
-
-            var result = validator.Validate(categoria);
-
-            Assert.Contains(result.Errors, o => o.PropertyName == "Cofins");
+            Assert.False(categoria.EhValido());
         }
     }
 }

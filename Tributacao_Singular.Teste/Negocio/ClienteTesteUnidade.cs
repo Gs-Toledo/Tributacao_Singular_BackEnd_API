@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Moq;
 using Tributacao_Singular.Negocio.Modelos;
 using Tributacao_Singular.Negocio.Validacoes;
 using Tributacao_Singular.Negocio.Validacoes.Documentos;
@@ -12,21 +13,15 @@ namespace Tributacao_Singular.Teste.Negocio
         {
             Cliente cliente = new Cliente("Nome", new List<Produto>(), "80.455.619/0001-20");
 
-            var validator = new ClienteValidation();
-
-            Assert.True(validator.Validate(cliente).IsValid);
+            Assert.True(cliente.EhValido());
         }
 
         [Fact]
         public void DeveGerarClienteComErroNome()
         {
-            Cliente cliente = new Cliente("N", new List<Produto>(), "80.455.619/0001-20");
+            Cliente cliente = new Cliente(It.IsAny<String>(), new List<Produto>(), "80.455.619/0001-20");
 
-            var validator = new ClienteValidation();
-
-            var result = validator.Validate(cliente);
-
-            Assert.Contains(result.Errors, o => o.PropertyName == "nome");
+            Assert.False(cliente.EhValido());
         }
     }
 }

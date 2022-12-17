@@ -15,9 +15,7 @@ namespace Tributacao_Singular.Teste.Negocio
         {
             Produto produto = new Produto("descricao", "11111111", "1111111111111", new Categoria(), new Cliente(), 0);
 
-            var validator = new ProdutoValidation();
-
-            Assert.True(validator.Validate(produto).IsValid);
+            Assert.True(produto.EhValido());
         }
 
         [Fact]
@@ -25,11 +23,7 @@ namespace Tributacao_Singular.Teste.Negocio
         {
             Produto produto = new Produto("d", "11111111", "1111111111111", new Categoria(), new Cliente(), 0);
 
-            var validator = new ProdutoValidation();
-
-            var result = validator.Validate(produto);
-
-            Assert.Contains(result.Errors, o => o.PropertyName == "descricao");
+            Assert.False(produto.EhValido());
         }
 
         [Fact]
@@ -37,11 +31,7 @@ namespace Tributacao_Singular.Teste.Negocio
         {
             Produto produto = new Produto("d", "11111111", "1", new Categoria(), new Cliente(), 0);
 
-            var validator = new ProdutoValidation();
-
-            var result = validator.Validate(produto);
-
-            Assert.Contains(result.Errors, o => o.PropertyName == "EAN");
+            Assert.False(produto.EhValido());
         }
 
         [Fact]
@@ -49,11 +39,7 @@ namespace Tributacao_Singular.Teste.Negocio
         {
             Produto produto = new Produto("d", "1", "1111111111111", new Categoria(), new Cliente(), 0);
 
-            var validator = new ProdutoValidation();
-
-            var result = validator.Validate(produto);
-
-            Assert.Contains(result.Errors, o => o.PropertyName == "NCM");
+            Assert.False(produto.EhValido());
         }
     }
 }

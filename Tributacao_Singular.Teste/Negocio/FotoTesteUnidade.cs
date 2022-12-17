@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Moq;
 using Newtonsoft.Json;
 using Tributacao_Singular.Negocio.Modelos;
 
@@ -16,7 +17,7 @@ namespace Tributacao_Singular.Teste.Negocio
             //ARRANGE
             Guid idEsperado = Guid.NewGuid();
             Guid idUsuarioEsperado = Guid.NewGuid();
-            byte[] srcEsperado = null;
+            byte[] srcEsperado = new byte[4];
 
             //ACT
             var foto = new Foto()
@@ -27,9 +28,7 @@ namespace Tributacao_Singular.Teste.Negocio
             };
 
             //ASSERT
-            Assert.Equal(idEsperado, foto.Id);
-            Assert.Equal(srcEsperado, foto.Src);
-            Assert.Equal(idUsuarioEsperado, foto.idUsuario);
+            Assert.True(foto.EhValido());
         }
 
         [Fact(DisplayName = "Deve criar uma foto com id usuário válido")]
@@ -42,35 +41,28 @@ namespace Tributacao_Singular.Teste.Negocio
             var foto = new Foto()
             {
                 Id = Guid.NewGuid(),
-                Src = null,
+                Src = new byte[4],
                 idUsuario = idUsuarioEsperado
             };
 
             //ASSERT
-            Assert.Equal(idUsuarioEsperado, foto.idUsuario);
+            Assert.True(foto.EhValido());
         }
 
-        //[Fact(DisplayName = "Não deve permitir a criação de uma foto inválida")]
-        //public void CriaFotoComErro()
-        //{
-        //    //ARRANGE
-        //    Guid idEsperado = Guid.NewGuid();
-        //    Guid idUsuarioEsperado = Guid.NewGuid();
-        //    byte[] srcEsperado = null;
+        [Fact(DisplayName = "Não deve permitir a criação de uma foto inválida")]
+        public void CriaFotoComErro()
+        {
+            //ACT
+            var foto = new Foto()
+            {
+                Id = Guid.NewGuid(),
+                Src = new byte[0],
+                idUsuario = Guid.NewGuid()
+            };
 
-        //    //ACT
-        //    var foto = new Foto()
-        //    {
-        //        Id = Guid.NewGuid(),
-        //        Src = null,
-        //        idUsuario = Guid.NewGuid()
-        //};
-
-        //    //ASSERT
-        //    Assert.NotEqual(idEsperado, foto.Id);
-        //    Assert.NotEqual(srcEsperado, foto.Src);
-        //    Assert.NotEqual(idUsuarioEsperado, foto.idUsuario);
-        //}
+            //ASSERT
+            Assert.False(foto.EhValido());
+        }
 
         [Fact(DisplayName = "Não deve permitir a criação de uma foto com idUsuario inválido")]
         public void CriaFotoComIdUsuarioInvalido()
@@ -82,12 +74,12 @@ namespace Tributacao_Singular.Teste.Negocio
             var foto = new Foto()
             {
                 Id = Guid.NewGuid(),
-                Src = null,
-                idUsuario = Guid.NewGuid()
+                Src = new byte[0],
+                idUsuario = It.IsAny<Guid>()
         };
 
             //ASSERT
-            Assert.NotEqual(idUsuarioEsperado, foto.idUsuario);
+            Assert.False(foto.EhValido());
         }
 
     }

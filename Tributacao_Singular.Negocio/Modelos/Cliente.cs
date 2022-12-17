@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FluentValidation;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,14 +20,31 @@ namespace Tributacao_Singular.Negocio.Modelos
         {
             this.nome = "";
             this.cnpj = "";
-            Produtos = new List<Produto>();
+            this.Produtos = new List<Produto>();
         }
 
         public Cliente(string nome, List<Produto> produtos, string cnpj)
         {
             this.nome = nome;
             this.cnpj = cnpj;
-            Produtos = produtos;
+            this.Produtos = produtos;
+        }
+
+        public bool EhValido()
+        {
+            var resultadoValidacao = new ClienteValidation().Validate(this);
+            return resultadoValidacao.IsValid;
+        }
+    }
+
+    public class ClienteValidation : AbstractValidator<Cliente>
+    {
+        public ClienteValidation()
+        {
+            RuleFor(p => p.nome)
+                .NotEmpty().WithMessage("O campo {PropertyName} precisa ser fornecido")
+                .Length(2, 150)
+                .WithMessage("O campo {PropertyName} precisa ter entre {MinLength} e {MaxLength} caracteres");
         }
     }
 }
