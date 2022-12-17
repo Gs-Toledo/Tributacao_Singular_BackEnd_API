@@ -48,7 +48,7 @@ namespace Tributacao_Singular.Aplicacao.Comandos
             }
             catch (Exception ex)
             {
-                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Adicionar", ex.Message));
+                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio(request.Tipo, ex.Message));
                 return false;
             }
         }
@@ -61,21 +61,23 @@ namespace Tributacao_Singular.Aplicacao.Comandos
 
                 if (FotoExiste == null)
                 {
-                    await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Atualizar", "Não existe a foto informada."));
+                    await mediadorHandler.PublicarNotificacao(new NotificacaoDominio(request.Tipo, "Não existe a foto informada."));
                     return false;
                 }
+                else 
+                {
+                    FotoExiste.Id = request.Id;
+                    FotoExiste.Src = request.Src;
+                    FotoExiste.idUsuario = request.idUsuario;
 
-                FotoExiste.Id = request.Id;
-                FotoExiste.Src = request.Src;
-                FotoExiste.idUsuario = request.idUsuario;
+                    await repositorioFoto.Atualizar(FotoExiste);
 
-                await repositorioFoto.Atualizar(FotoExiste);
-
-                return true;
+                    return true;
+                }
             }
             catch (Exception ex)
             {
-                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Atualizar", ex.Message));
+                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio(request.Tipo, ex.Message));
                 return false;
             }
         }
@@ -89,7 +91,7 @@ namespace Tributacao_Singular.Aplicacao.Comandos
             }
             catch (DominioException ex)
             {
-                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("Remover", ex.Message));
+                await mediadorHandler.PublicarNotificacao(new NotificacaoDominio(request.Tipo, ex.Message));
                 return false;
             }
         }

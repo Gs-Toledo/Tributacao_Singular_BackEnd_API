@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FluentValidation;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,7 +20,30 @@ namespace Tributacao_Singular.Aplicacao.Comandos.FotoComandos
             Src = _Src;
             idUsuario = _idUsuario;
         }
+        public override bool EhValido()
+        {
+            ResultadoValidacao = new AdicionarFotoValidacao().Validate(this);
+            return ResultadoValidacao.IsValid;
+        }
 
+    }
+    public class AdicionarFotoValidacao : AbstractValidator<AdicionarFotoComando>
+    {
+        public AdicionarFotoValidacao()
+        {
+
+            RuleFor(c => c.Id)
+                .NotEmpty()
+                .WithMessage("Id não informado.");
+
+            RuleFor(c => c.Src)
+                .NotEmpty()
+                .WithMessage("Src não informado.");
+
+            RuleFor(c => c.idUsuario)
+                .NotEmpty()
+                .WithMessage("idUsuario não informado.");
+        }
     }
 
 
