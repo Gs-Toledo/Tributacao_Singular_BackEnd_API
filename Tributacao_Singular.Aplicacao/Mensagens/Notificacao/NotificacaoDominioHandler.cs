@@ -1,11 +1,13 @@
 ﻿using MediatR;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Vir_Fundos_Infraestrutura.Mensagens.Notificacao
 {
+    [ExcludeFromCodeCoverage]
     public class NotificacaoDominioHandler : INotificationHandler<NotificacaoDominio>
     {
         private List<NotificacaoDominio> notificacoes;

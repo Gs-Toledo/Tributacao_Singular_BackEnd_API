@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Security.Claims;
 using Tributacao_Singular.Negocio.Interfaces;
 
 namespace Tributacao_Singular.Servico.Extensoes
 {
+    [ExcludeFromCodeCoverage]
     public class AspNetUser : IUser
     {
         private readonly IHttpContextAccessor _accessor;
@@ -44,6 +46,7 @@ namespace Tributacao_Singular.Servico.Extensoes
         }
     }
 
+    [ExcludeFromCodeCoverage]
     public static class ClaimsPrincipalExtensions
     {
         public static string GetUserId(this ClaimsPrincipal principal)

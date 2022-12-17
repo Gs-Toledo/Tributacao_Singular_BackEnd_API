@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace Tributacao_Singular.Infra.Migrations.MeuDb
 {
+    [ExcludeFromCodeCoverage]
     public partial class MigDbContextUm : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)

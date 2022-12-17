@@ -1,7 +1,9 @@
 ﻿using Microsoft.OpenApi.Models;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Tributacao_Singular.Servico.Configuracoes
 {
+    [ExcludeFromCodeCoverage]
     public static class SwaggerSetup
     {
         public static void AddSwaggerSetup(this IServiceCollection services)

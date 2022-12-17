@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Tributacao_Singular.Servico.Extensoes;
 
 namespace Tributacao_Singular.Servico.Configuracoes
 {
+    [ExcludeFromCodeCoverage]
     public static class ConfigurarJwt
     {
         public static void AddJwtConfiguration(this IServiceCollection services,

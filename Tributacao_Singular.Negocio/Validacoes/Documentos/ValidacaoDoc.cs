@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Tributacao_Singular.Negocio.Validacoes.Documentos
 {
+    [ExcludeFromCodeCoverage]
     public static class CpfValidacao
     {
         public const int TamanhoCpf = 11;
@@ -55,6 +57,7 @@ namespace Tributacao_Singular.Negocio.Validacoes.Documentos
         }
     }
 
+    [ExcludeFromCodeCoverage]
     public class DigitoVerificador
     {
         private string _numero;
@@ -114,6 +117,7 @@ namespace Tributacao_Singular.Negocio.Validacoes.Documentos
         }
     }
 
+    [ExcludeFromCodeCoverage]
     public static class Utils
     {
         public static string ApenasNumeros(string valor)

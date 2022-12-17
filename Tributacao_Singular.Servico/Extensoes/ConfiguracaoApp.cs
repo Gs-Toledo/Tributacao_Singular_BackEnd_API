@@ -1,5 +1,8 @@
-﻿namespace Tributacao_Singular.Servico.Extensoes
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Tributacao_Singular.Servico.Extensoes
 {
+    [ExcludeFromCodeCoverage]
     public class ConfiguracaoApp
     {
         public string Segredo { get; set; }

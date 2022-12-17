@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Tributacao_Singular.Servico.Extensoes
 {
+    [ExcludeFromCodeCoverage]
     public class IdentityMensagensPortugues : IdentityErrorDescriber
     {
         public override IdentityError DefaultError() { return new IdentityError { Code = nameof(DefaultError), Description = $"Ocorreu um erro desconhecido." }; }

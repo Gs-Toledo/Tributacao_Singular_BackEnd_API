@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Diagnostics.CodeAnalysis;
 using Tributacao_Singular.Aplicacao.Comandos;
 using Tributacao_Singular.Aplicacao.Comandos.CategoriaComandos;
 using Tributacao_Singular.Aplicacao.Comandos.ClienteComandos;
@@ -18,6 +19,7 @@ using Vir_Fundos_Infraestrutura.Mensagens.Notificacao;
 
 namespace Tributacao_Singular.Servico.Configuracoes
 {
+    [ExcludeFromCodeCoverage]
     public static class DependencyInjectionConfig
     {
         public static IServiceCollection ResolveDependencies(this IServiceCollection services)

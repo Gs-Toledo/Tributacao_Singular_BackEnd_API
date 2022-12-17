@@ -1,8 +1,10 @@
-﻿using Tributacao_Singular.Aplicacao.AutoMapper;
+﻿using System.Diagnostics.CodeAnalysis;
+using Tributacao_Singular.Aplicacao.AutoMapper;
 using Tributacao_Singular.Aplicacao.Servicos;
 
 namespace Tributacao_Singular.Servico.Configuracoes
 {
+    [ExcludeFromCodeCoverage]
     public static class AutoMapperSetup
     {
         public static void AddAutoMapperSetup(this IServiceCollection servicos)

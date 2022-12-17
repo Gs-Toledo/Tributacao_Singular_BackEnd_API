@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Vir_Fundos_Infraestrutura.Mensagens;
 using Vir_Fundos_Infraestrutura.Mensagens.Eventos;
@@ -6,6 +7,7 @@ using Vir_Fundos_Infraestrutura.Mensagens.Notificacao;
 
 namespace Vir_Fundos_Infraestrutura.Comunicacao.Mediador
 {
+    [ExcludeFromCodeCoverage]
     public class MediatorHandler : IMediatorHandler
     {
         private readonly IMediator mediador;

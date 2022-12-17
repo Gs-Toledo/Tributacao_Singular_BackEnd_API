@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -11,6 +12,7 @@ using Tributacao_Singular.Negocio.Modelos;
 
 namespace Tributacao_Singular.Infra.Repositorios
 {
+    [ExcludeFromCodeCoverage]
     public class Repository<TEntity> : IRepositorio<TEntity> where TEntity : Entity, new()
     {
         protected readonly MeuDbContext Db;

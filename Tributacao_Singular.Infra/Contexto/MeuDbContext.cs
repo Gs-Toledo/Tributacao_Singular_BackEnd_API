@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ using Tributacao_Singular.Negocio.Modelos;
 
 namespace Tributacao_Singular.Infra.Contexto
 {
+    [ExcludeFromCodeCoverage]
     public class MeuDbContext : DbContext, IUnidadeTrabalho
     {
         public MeuDbContext(DbContextOptions<MeuDbContext> options) : base(options) { }

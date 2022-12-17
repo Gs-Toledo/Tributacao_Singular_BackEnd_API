@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Tributacao_Singular.Infra.Contexto;
@@ -11,6 +12,7 @@ using Tributacao_Singular.Servico.Extensoes;
 
 namespace Tributacao_Singular.Servico.Configuracoes
 {
+    [ExcludeFromCodeCoverage]
     public static class IdentityConfig
     {
         public static IServiceCollection AddIdentityConfiguration(this IServiceCollection services, IConfiguration configuration)

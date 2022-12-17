@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 
 namespace Tributacao_Singular.Servico.Extensoes
 {
+    [ExcludeFromCodeCoverage]
     public class CustomAuthorization
     {
         public static bool ValidarClaimsUsuario(HttpContext context, string claimName, string claimValue)
@@ -14,6 +16,7 @@ namespace Tributacao_Singular.Servico.Extensoes
 
     }
 
+    [ExcludeFromCodeCoverage]
     public class ClaimsAuthorizeAttribute : TypeFilterAttribute
     {
         public ClaimsAuthorizeAttribute(string claimName, string claimValue) : base(typeof(RequisitoClaimFilter))
@@ -22,6 +25,7 @@ namespace Tributacao_Singular.Servico.Extensoes
         }
     }
 
+    [ExcludeFromCodeCoverage]
     public class RequisitoClaimFilter : IAuthorizationFilter
     {
         private readonly Claim _claim;

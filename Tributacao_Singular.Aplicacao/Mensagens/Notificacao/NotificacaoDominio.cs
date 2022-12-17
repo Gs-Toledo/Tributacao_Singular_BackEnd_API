@@ -1,8 +1,10 @@
 ﻿using MediatR;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Vir_Fundos_Infraestrutura.Mensagens.Notificacao
 {
+    [ExcludeFromCodeCoverage]
     public class NotificacaoDominio : Mensagem, INotification
     {
         public DateTime Timestamp { get; private set; }
