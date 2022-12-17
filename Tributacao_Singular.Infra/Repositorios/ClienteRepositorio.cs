@@ -23,7 +23,7 @@ namespace Tributacao_Singular.Infra.Repositorios
 
         public async Task<Cliente> ObterClienteProdutosPorId(Guid Id)
         {
-            return await Db.Clientes.AsNoTracking()
+            return await Db.Clientes
                 .Include(x => x.Produtos)
                 .ThenInclude(x => x.Categoria)
                 .FirstOrDefaultAsync(x => x.Id == Id);
