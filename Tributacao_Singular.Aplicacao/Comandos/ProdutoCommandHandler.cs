@@ -53,7 +53,7 @@ namespace Tributacao_Singular.Aplicacao.Comandos
                 var ProcuraCategoriaBase = await respositorioCategoria.Buscar(x => x.descricao == "CategoriaBase");
                 var categoriaBase = ProcuraCategoriaBase.ToList();
 
-                if (ProcuraCategoriaBase == null | categoriaBase.Count == 0)
+                if (ProcuraCategoriaBase == null || categoriaBase.Count == 0)
                 {
                     await mediadorHandler.PublicarNotificacao(new NotificacaoDominio("AdicionarProduto", "Não existe uma categoria base informada, favor contactar serviço tecnico."));
                     return false;
