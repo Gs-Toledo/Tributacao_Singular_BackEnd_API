@@ -13,7 +13,7 @@ namespace Tributacao_Singular.Aplicacao.ViewModels
         public Guid Id { get; set; }
 
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
-        [StringLength(150, ErrorMessage = "O campo {0} precisa ter entre {1} e {2} caracteres"), MinLength(2)]
+        [StringLength(150, MinimumLength = 2, ErrorMessage = "O campo {0} precisa ter entre {2} e {1} caracteres")]
         public string descricao { get; set; }
 
         [Required(ErrorMessage = "O campo {0} é obrigatorio")]
