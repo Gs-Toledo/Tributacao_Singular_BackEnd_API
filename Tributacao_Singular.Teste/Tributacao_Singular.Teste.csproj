@@ -9,6 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Infra\**" />
+    <EmbeddedResource Remove="Infra\**" />
+    <None Remove="Infra\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
@@ -30,10 +36,6 @@
     <ProjectReference Include="..\Tributacao_Singular.Infra\Tributacao_Singular.Infra.csproj" />
     <ProjectReference Include="..\Tributacao_Singular.Negocio\Tributacao_Singular.Negocio.csproj" />
     <ProjectReference Include="..\Tributacao_Singular.Servico\Tributacao_Singular.Servico.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Infra\" />
   </ItemGroup>
 
 </Project>
